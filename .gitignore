@@ -1,0 +1,27 @@
+node_modules
+**/build
+
+# DS store
+*.DS_Store
+
+# IDE project files
+.idea
+
+# vim
+.*.swp
+
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
+
+# yarn
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
