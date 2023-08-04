@@ -8,7 +8,6 @@
     "start": "nodemon --exec babel-node viewer/src/index.ts",
     "lint": "eslint ."
   },
-  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",

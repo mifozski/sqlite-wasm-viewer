@@ -1,11 +1,12 @@
 {
   "private": true,
   "scripts": {
+    "build2": "webpack",
     "build": "babel ./viewer/src/index.ts --out-dir ./build",
     "start": "nodemon --exec babel-node viewer/src/index.ts",
+    "test": "babel viewer/src/index.ts --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
     "lint": "eslint ."
   },
-  "type": "module",
   "devDependencies": {
     "@babel/cli": "^7.22.9",
     "@babel/core": "^7.22.9",
@@ -13,6 +14,7 @@
     "@babel/preset-env": "^7.22.9",
     "@babel/preset-typescript": "^7.22.5",
     "@babel/runtime": "^7.22.6",
+    "babel-loader": "^9.1.3",
     "eslint": "^8.46.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.10.0",
@@ -21,7 +23,9 @@
     "eslint-plugin-prettier": "^5.0.0",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.1",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
   },
   "workspaces": [
     "viewer",
