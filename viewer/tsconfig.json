@@ -6,9 +6,11 @@
         "esModuleInterop": true,
         "lib": [
             "esnext",
-            "dom"
+            "dom",
+            "Webworker"
         ],
-        "baseUrl": "."
+        "baseUrl": ".",
+        "types": ["@types/wicg-file-system-access"]
     },
     "include": [
         "src/**/*.tsx",

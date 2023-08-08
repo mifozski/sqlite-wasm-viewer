@@ -11,9 +11,9 @@
         "baseUrl": "."
     },
     "include": [
-        "src/**/*.tsx",
-        "src/**/*.ts",
-        "src/**/*d.ts"
+        "viewer/src/**/*.tsx",
+        "viewer/src/**/*.ts",
+        "viewer/src/**/*d.ts"
     ],
     "exclude": [
         "node_modules",
