@@ -9,7 +9,9 @@ import { DbWorkerInput, DbWorkerOutput } from './types';
 export class DbViewerWorker {
     private initialized = false;
 
-    sqliteApi: any;
+    sqlite: any;
+
+    sqliteCApi: any;
 
     sqliteDb: any;
 
@@ -29,7 +31,8 @@ export class DbViewerWorker {
             }
 
             sqlite3InitModule().then(async (sqlite3: any) => {
-                this.sqliteApi = sqlite3;
+                this.sqlite = sqlite3;
+                this.sqliteCApi = sqlite3.capi;
                 // this.sqliteApi = sqlite3.capi;
                 // console.log(sqlite3);
                 // this.sqliteDb = new sqlite3.oo1.OpfsDb(
@@ -50,7 +53,7 @@ export class DbViewerWorker {
                 {
                     const { path } = message.data;
 
-                    this.sqliteDb = new this.sqliteApi.oo1.OpfsDb(path, 'c');
+                    this.sqliteDb = new this.sqlite.oo1.OpfsDb(path, 'c');
 
                     const sql = `SELECT name, sql FROM sqlite_master WHERE type='table' ORDER BY name`;
 
@@ -71,7 +74,7 @@ export class DbViewerWorker {
                     const rawStatement = this.sqliteDb.prepare(sql);
 
                     const isReader =
-                        this.sqliteApi.sqlite3_column_count(rawStatement) > 1;
+                        this.sqliteCApi.sqlite3_column_count(rawStatement) > 1;
                     // console.log('rawStatement col count:', isReader);
                     const resultRows = [];
                     try {
@@ -96,12 +99,12 @@ export class DbViewerWorker {
                             result: { resultRows },
                         });
                     } else {
-                        const changes = this.sqliteApi.sqlite3_changes(
+                        const changes = this.sqliteCApi.sqlite3_changes(
                             this.sqliteDb.pointer
                         );
                         // console.log('totat changes:', changes);
                         const lastInsertRowid =
-                            this.sqliteApi.sqlite3_last_insert_rowid(
+                            this.sqliteCApi.sqlite3_last_insert_rowid(
                                 this.sqliteDb.pointer
                             );
 

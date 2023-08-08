@@ -19,6 +19,7 @@ export type DbWorkerOutput =
           readonly requestId: number;
           readonly result: {
               resultRows?: any[];
+              tableName: string;
               updates?: { changes: any[]; lastInsertRowid: number };
           };
       };

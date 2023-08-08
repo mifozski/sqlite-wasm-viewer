@@ -4,13 +4,14 @@
         "module": "esnext",
         "target": "esnext",
         "esModuleInterop": true,
+        "moduleResolution": "nodenext",
         "lib": [
             "esnext",
             "dom",
             "Webworker"
         ],
         "baseUrl": ".",
-        "types": ["@types/wicg-file-system-access"]
+        // "types": ["@types/wicg-file-system-access", "@types/jstree"]
     },
     "include": [
         "src/**/*.tsx",

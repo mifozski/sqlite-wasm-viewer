@@ -8,5 +8,8 @@
         "typescript",
         "typescriptreact",
         "json"
-     ],
+    ],
+    "emmet.includeLanguages": {
+        "css": "css"
+    },
 }
