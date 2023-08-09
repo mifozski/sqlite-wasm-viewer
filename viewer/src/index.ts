@@ -2,8 +2,9 @@ import Tree from '@widgetjs/tree';
 
 import './styles.css';
 
-import { DbWorkerOutput } from './types';
+import { Database, DbWorkerOutput } from './types';
 import { TableView } from './TableView';
+import { ExecuteSQLView } from './ExecuteSQLView';
 
 let uiReady = false;
 
@@ -15,14 +16,13 @@ let explorerTreeEl: HTMLDivElement | null = null;
 
 let tableViewer: TableView | null = null;
 
+let middlePanel: HTMLDivElement | null = null;
+
 let rightPanel: HTMLDivElement | null = null;
 
 // const tableViewEl: HTMLDivElement | null = null;
 
-let db: {
-    post: (message) => void;
-    on: (message) => void;
-} | null = null;
+let db: Database | null = null;
 
 export function showViewer(): void {
     if (!uiReady) {
@@ -44,12 +44,25 @@ export function showViewer(): void {
 
         viewer.appendChild(dbListEl);
 
-        rightPanel = document.createElement('div');
-        rightPanel.id = 'right_panel';
+        // Middle Panel
+        middlePanel = document.createElement('div');
+        middlePanel.id = 'middle_panel';
 
         const tableViewEl = document.createElement('div');
         tableViewEl.id = 'table_view';
-        rightPanel.appendChild(tableViewEl);
+        middlePanel.appendChild(tableViewEl);
+
+        viewer.append(middlePanel);
+
+        // Right Panel
+        rightPanel = document.createElement('div');
+        rightPanel.id = 'right_panel';
+
+        // const inspector = document.createElement('div');
+        // inspector.id = 'inspector';
+        // rightPanel.appendChild(inspector);
+
+        const executeSqlView = new ExecuteSQLView(rightPanel);
 
         viewer.append(rightPanel);
 
@@ -105,6 +118,8 @@ export function showViewer(): void {
             },
         };
 
+        executeSqlView.setDb(db);
+
         worker.postMessage({ type: 'init' });
 
         uiReady = true;
@@ -119,23 +134,13 @@ export function hideViewer(): void {
 
 function buildExplorerTree(data) {
     const tree = new Tree('#tree_root', {
-        // root data
         data: [data],
-        loaded() {
-            // pre-selected nodes
-            // this.values = ['1-1-1', '1-1-2'];
-            // output selected nodes and values
-            // console.log(this.selectedNodes);
-            // console.log(this.values);
-            // disabled nodes
-            // this.disables = ['1-1-1', '1-1-1', '1-1-2'];
-        },
     });
 
     tree.onItemClick = (item) => {
         console.log(item);
         const sql = `SELECT * FROM ${item}`;
-        db.post({ type: 'query', query: { sql } });
+        db.post({ type: 'query', query: { sql, parameters: [] } });
     };
 
     tree.onItemClick('notes');

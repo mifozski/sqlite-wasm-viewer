@@ -20,6 +20,7 @@ module.exports = {
         'import/extensions': 'off',
         '@typescript-eslint/ban-ts-comment': 'off',
         'no-use-before-define': 'off',
+        'no-plusplus': 'off',
         'no-restricted-syntax': [
             'error',
             {

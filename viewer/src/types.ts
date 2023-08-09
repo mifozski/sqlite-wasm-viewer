@@ -23,3 +23,8 @@ export type DbWorkerOutput =
               updates?: { changes: any[]; lastInsertRowid: number };
           };
       };
+
+export type Database = {
+    post: (message: DbWorkerInput) => void;
+    on: (message: MessageEvent<DbWorkerOutput>) => void;
+};

@@ -12,4 +12,7 @@
     "emmet.includeLanguages": {
         "css": "css"
     },
+    "files.associations": {
+        "*.css": "css"
+    }
 }
