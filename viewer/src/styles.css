@@ -6,7 +6,6 @@ body {
 #viewer {
     position: fixed;
     top: 0;
-    width: 100%;
     height: 100%;
     background-color: red;
     display: flex;
@@ -15,6 +14,7 @@ body {
 }
 
 #db_list_header {
+    max-height: 30px;
     line-height: 1.1rem;
     padding: 8px;
 }
@@ -35,17 +35,41 @@ body {
 #right_panel {
     background-color: darkgray;
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#table_view {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 #table_view_header {
+    max-height: 30px;
+    left: 0;
+    right: 0;
+    position: sticky;
     line-height: 1.1rem;
     /* font-weight: bold; */
     padding: 8px;
     background-color: lightgray;
 }
 
-#table_view {
-    overflow: scroll;
+#table_container {
+    overflow-y: scroll;
+}
+
+#table_container table {
+    background-color: whitesmoke;
+    border-collapse: collapse;
+}
+
+#table_container thead {
+    position: sticky;
+    top: 0;
+    background-color: darkgray;
 }
 
 th {
@@ -55,4 +79,5 @@ th {
 td div {
     height: 40px;
     text-overflow: ellipsis;
+    overflow: hidden;
 }

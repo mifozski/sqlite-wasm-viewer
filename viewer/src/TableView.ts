@@ -60,14 +60,21 @@ export class TableView {
         this.viewHeader.id = 'table_view_header';
         this.rootElement.appendChild(this.viewHeader);
 
+        const tableContainer = document.createElement('div');
+        tableContainer.id = 'table_container';
+
         const table = document.createElement('table');
         this.headerRoot = table.createTHead();
         this.bodyRoot = table.createTBody();
+        tableContainer.appendChild(table);
 
-        this.rootElement.appendChild(table);
+        this.rootElement.appendChild(tableContainer);
     }
 
     buildTableDom(table: Table<any>) {
+        this.headerRoot.innerHTML = null;
+        this.bodyRoot.innerHTML = null;
+
         table.getHeaderGroups().forEach((group) => {
             group.headers.forEach((header) => {
                 const th = document.createElement('th');
