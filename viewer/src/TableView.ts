@@ -1,14 +1,14 @@
-import { createTable, Table, getCoreRowModel } from '@tanstack/table-core';
 import { ListVirtualizer } from './ListVirtualizer';
+import { Database } from './types';
 
 export class TableView {
-    private table: Table<any>;
-
     private rootElement: HTMLDivElement;
 
     private container: HTMLDivElement;
 
     private viewHeader: HTMLDivElement;
+
+    private viewHeaderTitle: HTMLSpanElement;
 
     private headerRoot: HTMLTableRowElement;
 
@@ -18,7 +18,12 @@ export class TableView {
 
     private rows;
 
-    constructor(rootElement: HTMLDivElement) {
+    private tableName: string;
+
+    constructor(
+        rootElement: HTMLDivElement,
+        private db: Database
+    ) {
         this.rootElement = rootElement;
 
         this.buildDomTemplate();
@@ -33,7 +38,6 @@ export class TableView {
             generatorFn: (i: number) => {
                 const row = this.rows[i];
 
-                // console.log('row:', row);
                 if (!row) {
                     return null;
                 }
@@ -44,17 +48,11 @@ export class TableView {
                     const value = row[columnKey];
                     const td = document.createElement('td');
                     const contentEl = document.createElement('div');
-                    // const context = cell.getContext();
-                    // const value = context.row.original[cell.column.id];
-                    // console.log('text:', value);
                     contentEl.innerHTML = value;
 
                     td.appendChild(contentEl);
                     tr.appendChild(td);
                 });
-                // row.getVisibleCells().forEach((cell) => {
-
-                // });
                 this.bodyRoot.appendChild(tr);
 
                 return tr;
@@ -62,11 +60,10 @@ export class TableView {
         });
     }
 
-    setTableResults(tableName: string, rows) {
+    setTableResults(rows) {
         this.rows = rows;
 
-        this.viewHeader.innerHTML = tableName;
-        console.log('rows:', rows);
+        this.viewHeaderTitle.innerHTML = this.tableName;
 
         const schema = rows.length > 0 ? Object.keys(rows[0]) : [];
         this.headerRoot.innerHTML = '';
@@ -78,43 +75,23 @@ export class TableView {
         });
 
         this.virtualizer.setRowCount(rows.length);
-        return;
-
-        this.viewHeader.innerHTML = tableName;
-        console.log(rows);
-
-        // const schema = rows.length > 0 ? Object.keys(rows[0]) : [];
-        // console.log(schema);
-
-        this.table = createTable({
-            data: rows,
-            columns: schema.map((schemaCol) => {
-                return { id: schemaCol, header: schemaCol };
-            }),
-            onStateChange: (state) => {
-                console.log('new state:', state);
-            },
-            state: {},
-            getCoreRowModel: getCoreRowModel(),
-            renderFallbackValue: () => {
-                // console.log('renderFallbackValue');
-            },
-        });
-
-        this.table.setOptions((prev) => ({
-            ...prev,
-            state: {
-                ...prev.state,
-                ...this.table.initialState,
-            },
-        }));
-
-        this.buildTableDom(this.table);
     }
 
     buildDomTemplate() {
         this.viewHeader = document.createElement('div');
         this.viewHeader.id = 'table_view_header';
+
+        this.viewHeaderTitle = document.createElement('span');
+        this.viewHeaderTitle.id = 'table_view_header_title';
+        this.viewHeader.appendChild(this.viewHeaderTitle);
+
+        const updateBtn = document.createElement('button');
+        updateBtn.innerText = 'Update';
+        updateBtn.onclick = () => {
+            this.requestAllRows();
+        };
+        this.viewHeader.appendChild(updateBtn);
+
         this.rootElement.appendChild(this.viewHeader);
 
         this.container = document.createElement('div');
@@ -132,34 +109,18 @@ export class TableView {
         this.rootElement.appendChild(this.container);
     }
 
-    buildTableDom(table: Table<any>) {
-        this.headerRoot.innerHTML = null;
-        this.bodyRoot.innerHTML = null;
+    public setTable(name: string) {
+        if (this.tableName === name) {
+            return;
+        }
 
-        table.getHeaderGroups().forEach((group) => {
-            group.headers.forEach((header) => {
-                const th = document.createElement('th');
-                th.innerHTML = header.column.columnDef.header;
+        this.tableName = name;
 
-                this.headerRoot.appendChild(th);
-            });
-        });
+        this.requestAllRows();
+    }
 
-        table.getRowModel().rows.forEach((row) => {
-            const tr = document.createElement('tr');
-
-            row.getVisibleCells().forEach((cell) => {
-                const td = document.createElement('td');
-                const contentEl = document.createElement('div');
-                const context = cell.getContext();
-                const value = context.row.original[cell.column.id];
-                // console.log('text:', value);
-                contentEl.innerHTML = value;
-
-                td.appendChild(contentEl);
-                tr.appendChild(td);
-            });
-            this.bodyRoot.appendChild(tr);
-        });
+    private requestAllRows(): void {
+        const sql = `SELECT * FROM ${this.tableName}`;
+        this.db.post({ type: 'query', query: { sql, parameters: [] } });
     }
 }

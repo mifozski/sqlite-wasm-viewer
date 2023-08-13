@@ -32,7 +32,7 @@
   "packageManager": "yarn@3.6.1",
   "dependencies": {
     "@sqlite.org/sqlite-wasm": "^3.42.0-build6",
-    "@tanstack/table-core": "^8.9.3",
-    "@widgetjs/tree": "^1.8.3"
+    "@widgetjs/tree": "^1.8.3",
+    "sql-highlight": "^4.3.3"
   }
 }

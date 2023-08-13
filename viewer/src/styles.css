@@ -1,6 +1,5 @@
 body {
     margin: 0;
-    font-family: sans-serif;
 }
 
 .viewHeader {
@@ -45,14 +44,15 @@ body {
 
 #middle_panel {
     background-color: darkgray;
-    flex-grow: 1;
+    flex: 1;
+    flex-basis: 800px;
     display: flex;
     flex-direction: column;
 }
 
 #right_panel {
     background-color: darkgray;
-    flex-grow: 1;
+    flex: 1;
     display: flex;
     flex-direction: column;
 }
@@ -77,6 +77,10 @@ body {
     background-color: lightgray;
 }
 
+#table_view_header_title {
+    padding: 8px;
+}
+
 #table_container {
     overflow-y: scroll;
     flex: 1;
@@ -95,7 +99,6 @@ body {
     flex: 1;
     overflow-y: scroll;
     position: relative;
-    /* display: block; */
 }
 
 #table_container th {
@@ -117,7 +120,28 @@ td div {
     flex-direction: column;
 }
 
-#execute_sql_textarea {
-    width: 300px;
+#execute_sql_editor {
+    position: relative;
+    background-color: white;
     height: 300px;
+}
+
+#execute_sql_textarea, #execute_sql_highlighting {
+    position: absolute;
+    height: 300px;
+    left: 0;
+    right: 0;
+}
+
+#execute_sql_textarea {
+    resize: none;
+    z-index: 1;
+    color: transparent;
+    background: transparent;
+    caret-color: black;
+}
+
+#execute_sql_highlighting {
+    z-index: 0;
+    margin: 0;
 }

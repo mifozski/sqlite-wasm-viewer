@@ -20,8 +20,6 @@ let middlePanel: HTMLDivElement | null = null;
 
 let rightPanel: HTMLDivElement | null = null;
 
-// const tableViewEl: HTMLDivElement | null = null;
-
 let db: Database | null = null;
 
 export function showViewer(): void {
@@ -58,15 +56,9 @@ export function showViewer(): void {
         rightPanel = document.createElement('div');
         rightPanel.id = 'right_panel';
 
-        // const inspector = document.createElement('div');
-        // inspector.id = 'inspector';
-        // rightPanel.appendChild(inspector);
-
         const executeSqlView = new ExecuteSQLView(rightPanel);
 
         viewer.append(rightPanel);
-
-        tableViewer = new TableView(tableViewEl);
 
         const worker = new Worker(new URL('DbWorker.ts', import.meta.url), {
             type: 'module',
@@ -80,8 +72,8 @@ export function showViewer(): void {
                 root.id = message.data.dbs[0];
                 root.text = message.data.dbs[0];
 
-                message.data.dbs.forEach((db) => {
-                    worker.postMessage({ type: 'readSchema', path: db });
+                message.data.dbs.forEach((dbPath) => {
+                    worker.postMessage({ type: 'readSchema', path: dbPath });
                 });
             } else if (message.data.type === 'onSchema') {
                 console.log('schema:', message.data.schema);
@@ -102,10 +94,7 @@ export function showViewer(): void {
                 buildExplorerTree(root);
             } else if (message.data.type === 'onQuery') {
                 console.log('onquery:', message.data);
-                tableViewer.setTableResults(
-                    message.data.result.tableName || 'notes',
-                    message.data.result.resultRows
-                );
+                tableViewer.setTableResults(message.data.result.resultRows);
             }
         };
 
@@ -117,6 +106,8 @@ export function showViewer(): void {
                 worker.onmessage(message);
             },
         };
+
+        tableViewer = new TableView(tableViewEl, db);
 
         executeSqlView.setDb(db);
 
@@ -138,9 +129,7 @@ function buildExplorerTree(data) {
     });
 
     tree.onItemClick = (item) => {
-        console.log(item);
-        const sql = `SELECT * FROM ${item}`;
-        db.post({ type: 'query', query: { sql, parameters: [] } });
+        tableViewer.setTable(item);
     };
 
     tree.onItemClick('notes');

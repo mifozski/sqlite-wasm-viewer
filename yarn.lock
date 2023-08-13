@@ -1672,13 +1672,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/table-core@npm:^8.9.3":
-  version: 8.9.3
-  resolution: "@tanstack/table-core@npm:8.9.3"
-  checksum: 52c7e57daaa3160450fb0bde702ec0b8aab159e2b19efd1012e03b3e167acc52839f5b39578cc8bf96e91346719f400d0435a5191384c168d9477da82f276c38
-  languageName: node
-  linkType: hard
-
 "@tootallnate/once@npm:2":
   version: 2.0.0
   resolution: "@tootallnate/once@npm:2.0.0"
@@ -7101,6 +7094,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sql-highlight@npm:^4.3.3":
+  version: 4.3.3
+  resolution: "sql-highlight@npm:4.3.3"
+  checksum: 25698dfca19bb7cf025b44b3df6769f1a7f4afd88807efc7b68aadd9f892e0d8ef64b35c0a51593135a5b376584da1daf4455ed1764730bb2033f2bfad26c44c
+  languageName: node
+  linkType: hard
+
 "sqlite-wasm-tester-app@workspace:tester-app":
   version: 0.0.0-use.local
   resolution: "sqlite-wasm-tester-app@workspace:tester-app"
@@ -7120,7 +7120,6 @@ __metadata:
     "@babel/preset-typescript": ^7.22.5
     "@babel/runtime": ^7.22.6
     "@sqlite.org/sqlite-wasm": ^3.42.0-build6
-    "@tanstack/table-core": ^8.9.3
     "@types/wicg-file-system-access": ^2020.9.6
     "@widgetjs/tree": ^1.8.3
     eslint: ^8.46.0
@@ -7131,6 +7130,7 @@ __metadata:
     eslint-plugin-prettier: ^5.0.0
     nodemon: ^3.0.1
     prettier: ^3.0.1
+    sql-highlight: ^4.3.3
     typescript: ^5.1.6
   languageName: unknown
   linkType: soft

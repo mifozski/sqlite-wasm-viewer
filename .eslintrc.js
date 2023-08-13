@@ -21,6 +21,7 @@ module.exports = {
         '@typescript-eslint/ban-ts-comment': 'off',
         'no-use-before-define': 'off',
         'no-plusplus': 'off',
+        'prefer-destructuring': ['object'],
         'no-restricted-syntax': [
             'error',
             {

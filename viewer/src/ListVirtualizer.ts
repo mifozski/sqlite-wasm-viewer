@@ -38,19 +38,18 @@ export class ListVirtualizer {
         this.scrollTop = 0;
 
         this.generatorFn = config.generatorFn;
-        console.log(config.totalRows);
         this.totalRows = config.totalRows;
 
         this.container = config.container;
         this.contentRoot = config.contentRoot;
 
-        this.renderChunk(this.container, 0 /* , cachedItemsLen / 2 */);
+        this.renderChunk(0);
 
         this.container.addEventListener('scroll', this.handleScroll.bind(this));
     }
 
-    handleScroll(e: Event) {
-        const { scrollTop } = e.target;
+    handleScroll(e: MouseEvent) {
+        const { scrollTop } = e.target as HTMLElement;
 
         this.scrollTop = scrollTop;
         const screenItemsLen = Math.ceil(this.height / this.itemHeight);
@@ -61,14 +60,14 @@ export class ListVirtualizer {
             !this.lastRepaintY ||
             Math.abs(scrollTop - this.lastRepaintY) > maxBuffer
         ) {
-            this.renderChunk(this.container, first);
+            this.renderChunk(first);
             this.lastRepaintY = scrollTop;
         }
 
         e.preventDefault();
     }
 
-    renderChunk(node: HTMLElement, fromPos: number) {
+    renderChunk(fromPos: number) {
         this.screenItemsLen = Math.ceil(this.height / this.itemHeight);
 
         // Cache 4 times the number of items that fit in the container viewport
@@ -101,9 +100,6 @@ export class ListVirtualizer {
         }
 
         if (itemCount < this.totalRows) {
-            console.log('totalRows:', this.totalRows);
-            console.log('remaining rows:', this.totalRows - itemCount);
-
             const bottomOffsetterRow = document.createElement('tr');
             const offsetterEl = document.createElement('td');
             offsetterEl.style.height = `${
@@ -126,6 +122,6 @@ export class ListVirtualizer {
         );
         first = first < 0 ? 0 : first;
 
-        this.renderChunk(this.container, first);
+        this.renderChunk(first);
     }
 }
