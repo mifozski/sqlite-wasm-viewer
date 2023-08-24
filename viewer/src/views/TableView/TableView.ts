@@ -95,7 +95,7 @@ export class TableView {
         const updateBtn = document.createElement('button');
         updateBtn.innerText = 'Update';
         updateBtn.onclick = () => {
-            this.requestAllRows();
+            this.requestRows();
         };
         this.viewHeader.appendChild(updateBtn);
 
@@ -162,10 +162,10 @@ export class TableView {
         this.columnNames = [];
         this.fitlers = {};
 
-        this.requestAllRows();
+        this.requestRows();
     }
 
-    private requestAllRows(): void {
+    private requestRows(): void {
         let sql = `SELECT * FROM ${this.tableName}`;
 
         const filterSql: string[] = [];
@@ -190,7 +190,7 @@ export class TableView {
             window.clearTimeout(this.updateTimer);
         }
         this.updateTimer = window.setTimeout(() => {
-            this.requestAllRows();
+            this.requestRows();
             this.updateTimer = null;
         }, 300);
     }

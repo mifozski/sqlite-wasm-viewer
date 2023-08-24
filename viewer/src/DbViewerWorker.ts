@@ -62,7 +62,11 @@ export class DbViewerWorker {
                         returnValue: 'resultRows',
                     });
 
-                    this.sendMessage({ type: 'onSchema', schema: result });
+                    this.sendMessage({
+                        type: 'onSchema',
+                        schema: result,
+                        dbName: path,
+                    });
                 }
                 break;
             case 'query':

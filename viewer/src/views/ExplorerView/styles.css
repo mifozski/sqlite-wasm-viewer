@@ -1,0 +1,27 @@
+#explorer_tree {
+    padding-left: 20px;
+}
+
+#explorer_tree > .db {
+    position: relative;
+}
+
+#explorer_tree .expand {
+    position: absolute;
+    top: 0;
+    left: -15px;
+    transition: all .3s ease-in;
+}
+
+#explorer_tree .expanded {
+    transform: rotate(90deg);
+}
+
+#explorer_tree > .table {
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+#explorer_tree > .table.selected {
+    background-color: rgb(128, 128, 128);
+}

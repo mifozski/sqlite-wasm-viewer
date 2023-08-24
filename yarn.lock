@@ -2216,13 +2216,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@widgetjs/tree@npm:^1.8.3":
-  version: 1.8.3
-  resolution: "@widgetjs/tree@npm:1.8.3"
-  checksum: 75e6c92849e9dc80ae8ce18b04f4533896bb23f135d90d44cf288d1c3e74d8f6f8743ac36260fb507abdc95fe18ceca36ce310bd85d4fb48536edc534f853d26
-  languageName: node
-  linkType: hard
-
 "@xtuc/ieee754@npm:^1.2.0":
   version: 1.2.0
   resolution: "@xtuc/ieee754@npm:1.2.0"
@@ -7121,7 +7114,6 @@ __metadata:
     "@babel/runtime": ^7.22.6
     "@sqlite.org/sqlite-wasm": ^3.42.0-build6
     "@types/wicg-file-system-access": ^2020.9.6
-    "@widgetjs/tree": ^1.8.3
     eslint: ^8.46.0
     eslint-config-airbnb-base: ^15.0.0
     eslint-config-prettier: ^8.10.0

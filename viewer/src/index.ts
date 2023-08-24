@@ -1,5 +1,3 @@
-import Tree from '@widgetjs/tree';
-
 import './styles.css';
 
 import { DbWorkerOutput } from './types';
@@ -7,6 +5,7 @@ import { TableView } from './views/TableView/TableView';
 import { ExecuteSQLView } from './views/ExecuteSQLView/ExecuteSQLView';
 import { QueryRunner } from './QueryRunner';
 import { initSqlLogView } from './views/SqlLogView/SqlLogView';
+import { DatabaseItem, ExplorerView } from './views/ExplorerView/ExplorerView';
 
 let uiReady = false;
 
@@ -21,6 +20,8 @@ let tableViewer: TableView | null = null;
 let middlePanel: HTMLDivElement | null = null;
 
 let rightPanel: HTMLDivElement | null = null;
+
+let explorerView: ExplorerView | null = null;
 
 let queryRunner: QueryRunner | null = null;
 
@@ -66,34 +67,31 @@ export function showViewer(): void {
             type: 'module',
         });
 
-        const root = {};
+        explorerView = new ExplorerView(explorerTreeEl, (tableName) => {
+            tableViewer?.setTable(tableName);
+        });
+
+        const dbs: { [dbFilepath: string]: DatabaseItem } = {};
         worker.onmessage = (message: MessageEvent<DbWorkerOutput>): void => {
-            console.log('message:', message.data);
-
             if (message.data.type === 'onReady') {
-                root.id = message.data.dbs[0];
-                root.text = message.data.dbs[0];
-
                 message.data.dbs.forEach((dbPath) => {
+                    const dbFilepath = dbPath;
+                    const dbName = dbPath;
+                    dbs[dbFilepath] = {
+                        filename: dbName,
+                        tables: [],
+                    };
+
                     worker.postMessage({ type: 'readSchema', path: dbPath });
                 });
             } else if (message.data.type === 'onSchema') {
-                console.log('schema:', message.data.schema);
+                const tables = message.data.schema.map((tableSchema) => {
+                    return tableSchema[0];
+                });
 
-                const tables = message.data.schema
-                    .map((tableSchema) => {
-                        return tableSchema[0];
-                    })
-                    .map((table) => {
-                        return {
-                            id: table,
-                            text: table,
-                        };
-                    });
+                dbs[message.data.dbName].tables = tables;
 
-                root.children = tables;
-
-                buildExplorerTree(root);
+                explorerView.addDatabaseItem(dbs[message.data.dbName]);
             } else if (message.data.type === 'onQuery') {
                 tableViewer.setTableResults(message.data.result.resultRows);
             }
@@ -126,16 +124,4 @@ export function showViewer(): void {
 
 export function hideViewer(): void {
     document.body.removeChild(viewer);
-}
-
-function buildExplorerTree(data) {
-    const tree = new Tree('#tree_root', {
-        data: [data],
-    });
-
-    tree.onItemClick = (item) => {
-        tableViewer.setTable(item);
-    };
-
-    tree.onItemClick('notes');
 }

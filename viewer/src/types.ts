@@ -13,7 +13,7 @@ export type DbWorkerInput =
 
 export type DbWorkerOutput =
     | { readonly type: 'onReady'; dbs: string[] }
-    | { readonly type: 'onSchema'; schema: string[] }
+    | { readonly type: 'onSchema'; dbName: string; schema: string[] }
     | {
           readonly type: 'onQuery';
           readonly requestId: number;
