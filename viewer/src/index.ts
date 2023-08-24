@@ -2,9 +2,11 @@ import Tree from '@widgetjs/tree';
 
 import './styles.css';
 
-import { Database, DbWorkerOutput } from './types';
-import { TableView } from './TableView';
-import { ExecuteSQLView } from './ExecuteSQLView';
+import { DbWorkerOutput } from './types';
+import { TableView } from './views/TableView/TableView';
+import { ExecuteSQLView } from './views/ExecuteSQLView/ExecuteSQLView';
+import { QueryRunner } from './QueryRunner';
+import { initSqlLogView } from './views/SqlLogView/SqlLogView';
 
 let uiReady = false;
 
@@ -20,7 +22,7 @@ let middlePanel: HTMLDivElement | null = null;
 
 let rightPanel: HTMLDivElement | null = null;
 
-let db: Database | null = null;
+let queryRunner: QueryRunner | null = null;
 
 export function showViewer(): void {
     if (!uiReady) {
@@ -93,12 +95,11 @@ export function showViewer(): void {
 
                 buildExplorerTree(root);
             } else if (message.data.type === 'onQuery') {
-                console.log('onquery:', message.data);
                 tableViewer.setTableResults(message.data.result.resultRows);
             }
         };
 
-        db = {
+        const db = {
             post: (message) => {
                 worker.postMessage(message);
             },
@@ -107,9 +108,13 @@ export function showViewer(): void {
             },
         };
 
-        tableViewer = new TableView(tableViewEl, db);
+        queryRunner = new QueryRunner(db);
 
-        executeSqlView.setDb(db);
+        initSqlLogView(rightPanel, queryRunner);
+
+        tableViewer = new TableView(tableViewEl, queryRunner);
+
+        executeSqlView.setDb(queryRunner);
 
         worker.postMessage({ type: 'init' });
 

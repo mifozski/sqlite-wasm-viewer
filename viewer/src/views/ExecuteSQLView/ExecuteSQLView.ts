@@ -1,9 +1,11 @@
 import { highlight } from 'sql-highlight';
 
-import { Database } from './types';
+import './styles.css';
+
+import { QueryRunner } from 'src/QueryRunner';
 
 export class ExecuteSQLView {
-    db: Database | undefined;
+    queryRunner: QueryRunner | undefined;
 
     textArea: HTMLTextAreaElement;
 
@@ -34,6 +36,7 @@ export class ExecuteSQLView {
         const preCode = document.createElement('pre');
         preCode.id = 'execute_sql_highlighting';
         this.highlighting = document.createElement('code');
+        this.highlighting.className = 'highlighting';
         preCode.appendChild(this.highlighting);
         editorContainer.appendChild(preCode);
 
@@ -41,21 +44,23 @@ export class ExecuteSQLView {
 
         const executeBtn = document.createElement('button');
         executeBtn.innerText = 'Execute SQL';
-        executeBtn.onclick = this.handleExecuteSQL;
+        executeBtn.onclick = this.handleExecuteSql.bind(this);
         container.appendChild(executeBtn);
 
         this.rootEl.appendChild(container);
     }
 
-    private handleExecuteSQL() {
-        this.db.post({
-            type: 'query',
-            query: { sql: this.textArea.value, parameters: [] },
-        });
+    private handleExecuteSql() {
+        if (this.textArea.value) {
+            this.queryRunner.runQuery({
+                sql: this.textArea.value,
+                parameters: [],
+            });
+        }
     }
 
-    setDb(db: Database) {
-        this.db = db;
+    setDb(queryRunner: QueryRunner) {
+        this.queryRunner = queryRunner;
     }
 
     handleSqlChanged(event) {
@@ -65,8 +70,10 @@ export class ExecuteSQLView {
             html: true,
         });
 
+        if (highlighted.length === 0) {
+            this.highlighting.innerHTML = target.value;
+            return;
+        }
         this.highlighting.innerHTML = highlighted;
-
-        // console.log(highlighted);
     }
 }

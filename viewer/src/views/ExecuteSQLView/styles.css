@@ -1,0 +1,56 @@
+#execute_sql_container {
+    display: flex;
+    flex-direction: column;
+}
+
+#execute_sql_editor {
+    position: relative;
+    background-color: white;
+    height: 300px;
+}
+
+#execute_sql_textarea, #execute_sql_highlighting {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: auto;
+    white-space: nowrap;
+    font-size: 10pt;
+    font-family: monospace;
+    line-height: 1.5;
+    tab-size: 2;
+}
+
+#execute_sql_textarea {
+    resize: none;
+    z-index: 1;
+    color: transparent;
+    background: transparent;
+    caret-color: black;
+}
+
+#execute_sql_highlighting {
+    z-index: 0;
+    margin: 0;
+    padding: 2px;
+}
+
+.highlighting {
+    color: blue;
+}
+
+.sql-hl-keyword {
+    color: purple;
+    /* font-weight: 600; */
+}
+
+.sql-hl-special {
+    color: black;
+}
+
+.sql-hl-string {
+    color: red;
+    /* font-weight: 600; */
+}

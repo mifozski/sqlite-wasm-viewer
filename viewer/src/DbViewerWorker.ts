@@ -63,8 +63,6 @@ export class DbViewerWorker {
                     });
 
                     this.sendMessage({ type: 'onSchema', schema: result });
-
-                    console.log('scqliteDb:', this.sqliteDb);
                 }
                 break;
             case 'query':
