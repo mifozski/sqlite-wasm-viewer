@@ -13,6 +13,7 @@
   "license": "ISC",
   "packageManager": "yarn@3.6.1",
   "dependencies": {
+    "@sqlite.org/sqlite-wasm": "^3.x.x",
     "sqlite-wasm-viewer": "workspace:^"
   }
 }

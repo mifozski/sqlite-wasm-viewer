@@ -12,7 +12,7 @@ export class ExplorerView {
 
     private dbs: DatabaseItem[];
 
-    private selectedItem: HTMLDivElement | null = null;
+    private selectedItem: HTMLElement | null = null;
 
     constructor(
         rootEl: HTMLDivElement,
@@ -28,6 +28,13 @@ export class ExplorerView {
         this.dbs.push(databaseItem);
 
         this.addDbToDom(databaseItem);
+
+        if (this.selectedItem === null) {
+            const firstTable = document.querySelector(
+                '#explorer_tree > .table'
+            ) as HTMLElement | undefined;
+            this.selectTable(firstTable);
+        }
     }
 
     private addDbToDom(databaseItem: DatabaseItem) {
@@ -40,6 +47,7 @@ export class ExplorerView {
         const expandArrow = document.createElement('div');
         expandArrow.className = 'expand';
         expandArrow.innerText = '>';
+        expandArrow.style.cursor = 'pointer';
         expandArrow.onclick = () => {
             this.expandedItems[databaseItem.filename] =
                 !this.expandedItems[databaseItem.filename];
@@ -55,16 +63,24 @@ export class ExplorerView {
             tableItem.innerText = table;
             tableItem.className = 'table';
             tableItem.onclick = () => {
-                this.onTableClicked(table);
-
-                this.selectedItem?.classList.remove('selected');
-                tableItem.classList.add('selected');
-                this.selectedItem = tableItem;
+                this.selectTable(tableItem);
             };
 
             dbRoot.appendChild(tableItem);
         });
 
         this.containerEl.appendChild(dbRoot);
+    }
+
+    private selectTable(tableEl: HTMLElement | null) {
+        if (tableEl) {
+            const tableName = tableEl.innerText;
+
+            this.selectedItem?.classList.remove('selected');
+            tableEl.classList.add('selected');
+            this.selectedItem = tableEl;
+
+            this.onTableClicked(tableName);
+        }
     }
 }

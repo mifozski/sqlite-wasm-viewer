@@ -29,6 +29,6 @@ const showViewerBtn = document.getElementById(
     'show_viewer_btn'
 ) as HTMLButtonElement;
 
-// showViewerBtn.onclick = () => {
-showViewer();
-// };
+showViewerBtn.onclick = () => {
+    showViewer();
+};

@@ -19,7 +19,15 @@ body {
     background-color: red;
     display: flex;
     padding: 10px;
+    padding-top: 20px;
     gap: 8px;
+}
+
+#close_btn {
+    position: absolute;
+    left: 10px;
+    top: 0px;
+    cursor: pointer;
 }
 
 #db_list_header {

@@ -1658,17 +1658,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sqlite.org/sqlite-wasm@npm:^3.42.0-build6":
-  version: 3.42.0-build6
-  resolution: "@sqlite.org/sqlite-wasm@npm:3.42.0-build6"
-  dependencies:
-    comlink: ^4.4.1
-  dependenciesMeta:
-    comlink:
-      optional: true
+"@sqlite.org/sqlite-wasm@npm:^3.x.x":
+  version: 3.41.2
+  resolution: "@sqlite.org/sqlite-wasm@npm:3.41.2"
   bin:
     sqlite-wasm: bin/index.js
-  checksum: a3cee28b373390969fb4d44f212ef6150f0a4f158e78b0e08542a7481c45c0a140320c434d06cbe49f6d1a783251147ca5142448a9d594484dfc4f63faa5ecac
+  checksum: 9529fa19ea2411611e440451e91a1a9a592022ae1d36d1aa4821bc0bdbff90f74aae5e123bd384c98c9b84daf0ee967541bc571673c8a7144149b3d7542975fe
   languageName: node
   linkType: hard
 
@@ -2936,13 +2931,6 @@ __metadata:
   version: 2.0.20
   resolution: "colorette@npm:2.0.20"
   checksum: 0c016fea2b91b733eb9f4bcdb580018f52c0bc0979443dad930e5037a968237ac53d9beb98e218d2e9235834f8eebce7f8e080422d6194e957454255bde71d3d
-  languageName: node
-  linkType: hard
-
-"comlink@npm:^4.4.1":
-  version: 4.4.1
-  resolution: "comlink@npm:4.4.1"
-  checksum: 16d58a8f590087fc45432e31d6c138308dfd4b75b89aec0b7f7bb97ad33d810381bd2b1e608a1fb2cf05979af9cbfcdcaf1715996d5fcf77aeb013b6da3260af
   languageName: node
   linkType: hard
 
@@ -7098,6 +7086,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "sqlite-wasm-tester-app@workspace:tester-app"
   dependencies:
+    "@sqlite.org/sqlite-wasm": ^3.x.x
     sqlite-wasm-viewer: "workspace:^"
   languageName: unknown
   linkType: soft
@@ -7112,7 +7101,6 @@ __metadata:
     "@babel/preset-env": ^7.22.9
     "@babel/preset-typescript": ^7.22.5
     "@babel/runtime": ^7.22.6
-    "@sqlite.org/sqlite-wasm": ^3.42.0-build6
     "@types/wicg-file-system-access": ^2020.9.6
     eslint: ^8.46.0
     eslint-config-airbnb-base: ^15.0.0
@@ -7124,6 +7112,8 @@ __metadata:
     prettier: ^3.0.1
     sql-highlight: ^4.3.3
     typescript: ^5.1.6
+  peerDependencies:
+    "@sqlite.org/sqlite-wasm": ^3.x.x
   languageName: unknown
   linkType: soft
 

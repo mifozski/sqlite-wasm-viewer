@@ -30,6 +30,14 @@ export function showViewer(): void {
         viewer = document.createElement('div');
         viewer.id = 'viewer';
 
+        const closeBtn = document.createElement('div');
+        closeBtn.id = 'close_btn';
+        closeBtn.innerText = 'Close';
+        closeBtn.onclick = () => {
+            hideViewer();
+        };
+        viewer.appendChild(closeBtn);
+
         dbListEl = document.createElement('div');
         dbListEl.id = 'db_list';
 
