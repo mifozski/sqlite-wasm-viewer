@@ -4,6 +4,8 @@
 
 #explorer_tree > .db {
     position: relative;
+    text-overflow: ellipsis;
+    overflow-y: clip;
 }
 
 #explorer_tree .expand {

@@ -5,12 +5,10 @@ interface Config {
     itemHeight: number;
     container: HTMLElement;
     contentRoot: HTMLElement;
-    generatorFn: (index: number) => HTMLElement;
+    generatorFn: (index: number) => HTMLElement | null;
 }
 
 export class ListVirtualizer {
-    private width: number;
-
     private height: number;
 
     private itemHeight: number;
@@ -27,7 +25,7 @@ export class ListVirtualizer {
 
     private scrollTop: number;
 
-    private generatorFn: (index: number) => HTMLElement;
+    private generatorFn: (index: number) => HTMLElement | null;
 
     constructor(config: Config) {
         this.height = config.height;

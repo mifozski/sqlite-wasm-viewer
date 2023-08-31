@@ -7,13 +7,9 @@ import { QueryRunner } from './QueryRunner';
 import { initSqlLogView } from './views/SqlLogView/SqlLogView';
 import { DatabaseItem, ExplorerView } from './views/ExplorerView/ExplorerView';
 
-let uiReady = false;
-
 let viewer: HTMLDivElement | null = null;
 
 let dbListEl: HTMLDivElement | null = null;
-
-let explorerTreeEl: HTMLDivElement | null = null;
 
 let tableViewer: TableView | null = null;
 
@@ -26,7 +22,7 @@ let explorerView: ExplorerView | null = null;
 let queryRunner: QueryRunner | null = null;
 
 export function showViewer(): void {
-    if (!uiReady) {
+    if (!viewer) {
         viewer = document.createElement('div');
         viewer.id = 'viewer';
 
@@ -40,16 +36,6 @@ export function showViewer(): void {
 
         dbListEl = document.createElement('div');
         dbListEl.id = 'db_list';
-
-        const dbListHeader = document.createElement('div');
-        dbListHeader.id = 'db_list_header';
-        dbListHeader.innerText = 'Database List';
-
-        dbListEl.appendChild(dbListHeader);
-
-        explorerTreeEl = document.createElement('div');
-        explorerTreeEl.id = 'tree_root';
-        dbListEl.appendChild(explorerTreeEl);
 
         viewer.appendChild(dbListEl);
 
@@ -75,7 +61,7 @@ export function showViewer(): void {
             type: 'module',
         });
 
-        explorerView = new ExplorerView(explorerTreeEl, (tableName) => {
+        explorerView = new ExplorerView(dbListEl, (tableName) => {
             tableViewer?.setTable(tableName);
         });
 
@@ -99,9 +85,9 @@ export function showViewer(): void {
 
                 dbs[message.data.dbName].tables = tables;
 
-                explorerView.addDatabaseItem(dbs[message.data.dbName]);
+                explorerView?.addDatabaseItem(dbs[message.data.dbName]);
             } else if (message.data.type === 'onQuery') {
-                tableViewer.setTableResults(message.data.result.resultRows);
+                tableViewer?.setTableResults(message.data.result.resultRows);
             }
         };
 
@@ -123,13 +109,13 @@ export function showViewer(): void {
         executeSqlView.setDb(queryRunner);
 
         worker.postMessage({ type: 'init' });
-
-        uiReady = true;
     }
 
     document.body.appendChild(viewer);
 }
 
 export function hideViewer(): void {
-    document.body.removeChild(viewer);
+    if (viewer) {
+        document.body.removeChild(viewer);
+    }
 }

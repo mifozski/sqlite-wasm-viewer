@@ -138,7 +138,7 @@ async function collectDbFiles(): Promise<string[]> {
 
     return Promise.all(
         dbFileHandlers.map((dbFile) => {
-            return root.resolve(dbFile).then((parts) => parts.join('/'));
+            return root.resolve(dbFile).then((parts) => parts?.join('/') || '');
         })
     );
 }
@@ -146,14 +146,14 @@ async function collectDbFiles(): Promise<string[]> {
 async function getDbFiles(
     root: FileSystemDirectoryHandle
 ): Promise<FileSystemFileHandle[]> {
-    const dbs: FileSystemFileHandle[] = [];
+    let dbs: FileSystemFileHandle[] = [];
 
     for await (const handle of root.values()) {
-        const child = handle as FileSystemHandle;
+        const child = handle;
 
         if (child.kind === 'directory') {
             const childDbs = await getDbFiles(child);
-            dbs.concat(dbs, ...childDbs);
+            dbs = dbs.concat(dbs, ...childDbs);
         } else if (child.name.endsWith('.db')) {
             dbs.push(child);
         }

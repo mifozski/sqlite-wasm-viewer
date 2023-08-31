@@ -19,6 +19,13 @@ export class ExplorerView {
         private onTableClicked: (tableName: string) => void
     ) {
         this.dbs = [];
+
+        const dbListHeader = document.createElement('div');
+        dbListHeader.className = 'viewHeader';
+        dbListHeader.innerText = 'Database List';
+
+        rootEl.appendChild(dbListHeader);
+
         this.containerEl = document.createElement('div');
         this.containerEl.id = 'explorer_tree';
         rootEl.appendChild(this.containerEl);
@@ -33,7 +40,9 @@ export class ExplorerView {
             const firstTable = document.querySelector(
                 '#explorer_tree > .table'
             ) as HTMLElement | undefined;
-            this.selectTable(firstTable);
+            if (firstTable) {
+                this.selectTable(firstTable);
+            }
         }
     }
 

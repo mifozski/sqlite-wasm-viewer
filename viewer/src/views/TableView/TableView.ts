@@ -86,7 +86,7 @@ export class TableView {
 
     buildDomTemplate() {
         this.viewHeader = document.createElement('div');
-        this.viewHeader.id = 'table_view_header';
+        this.viewHeader.className = 'viewHeader';
 
         this.viewHeaderTitle = document.createElement('span');
         this.viewHeaderTitle.id = 'table_view_header_title';
