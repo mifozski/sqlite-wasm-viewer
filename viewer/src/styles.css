@@ -20,6 +20,9 @@
     flex-basis: 20px;
     line-height: 1.1rem;
     padding: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     background-color: lightgray;
 }
 

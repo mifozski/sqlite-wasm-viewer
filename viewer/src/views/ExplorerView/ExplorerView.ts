@@ -1,3 +1,5 @@
+import { ViewerState } from '../../viewerState';
+
 import './styles.css';
 
 export interface DatabaseItem {
@@ -14,10 +16,7 @@ export class ExplorerView {
 
     private selectedItem: HTMLElement | null = null;
 
-    constructor(
-        rootEl: HTMLDivElement,
-        private onTableClicked: (tableName: string) => void
-    ) {
+    constructor(rootEl: HTMLDivElement) {
         this.dbs = [];
 
         const dbListHeader = document.createElement('div');
@@ -89,7 +88,7 @@ export class ExplorerView {
             tableEl.classList.add('selected');
             this.selectedItem = tableEl;
 
-            this.onTableClicked(tableName);
+            ViewerState.instance.setSelectedTable(tableName);
         }
     }
 }

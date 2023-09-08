@@ -7,6 +7,8 @@ import { QueryRunner } from './QueryRunner';
 import { initSqlLogView } from './views/SqlLogView/SqlLogView';
 import { DatabaseItem, ExplorerView } from './views/ExplorerView/ExplorerView';
 import { collectDbFiles } from './dbScanner';
+import { EditCellView } from './views/EditCellView/EditCellView';
+import { initState } from './viewerState';
 
 let viewer: HTMLDivElement | null = null;
 
@@ -46,6 +48,8 @@ export function showViewer(): void {
         viewer = document.createElement('div');
         viewer.id = 'viewer';
 
+        initState(viewer);
+
         const closeBtn = document.createElement('div');
         closeBtn.id = 'close_btn';
         closeBtn.innerText = 'Close';
@@ -75,15 +79,15 @@ export function showViewer(): void {
 
         const executeSqlView = new ExecuteSQLView(rightPanel);
 
+        const editCellView = new EditCellView(viewer, rightPanel);
+
         viewer.append(rightPanel);
 
         const worker = new Worker(new URL('DbWorker.ts', import.meta.url), {
             type: 'module',
         });
 
-        explorerView = new ExplorerView(dbListEl, (tableName) => {
-            tableViewer?.setTable(tableName);
-        });
+        explorerView = new ExplorerView(dbListEl);
 
         const collectDbFilesPromise = collectDbFiles(config.isSqliteDatabase);
 
@@ -133,9 +137,10 @@ export function showViewer(): void {
 
         initSqlLogView(rightPanel, queryRunner);
 
-        tableViewer = new TableView(tableViewEl, queryRunner);
+        tableViewer = new TableView(viewer, tableViewEl, queryRunner);
 
         executeSqlView.setDb(queryRunner);
+        editCellView.setDb(queryRunner);
 
         worker.postMessage({ type: 'init' });
     }

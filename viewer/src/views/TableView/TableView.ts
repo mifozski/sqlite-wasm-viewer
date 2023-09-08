@@ -1,10 +1,9 @@
+import { ViewerState } from '../../viewerState';
 import { ListVirtualizer } from '../../ListVirtualizer';
 import { QueryRunner } from '../../QueryRunner';
 import './styles.css';
 
 export class TableView {
-    private rootElement: HTMLDivElement;
-
     private container: HTMLDivElement;
 
     private viewHeader: HTMLDivElement;
@@ -27,13 +26,19 @@ export class TableView {
 
     private updateTimer: number | null = null;
 
+    private selectedCell: HTMLTableCellElement | null = null;
+
     constructor(
-        rootElement: HTMLDivElement,
+        private viewerElem: HTMLElement,
+        private rootElement: HTMLDivElement,
         private queryRunner: QueryRunner
     ) {
-        this.rootElement = rootElement;
-
         this.buildDomTemplate();
+
+        this.viewerElem.addEventListener('tableSelected', (event) => {
+            const { detail: tableName } = event;
+            this.setTable(tableName);
+        });
 
         this.virtualizer = new ListVirtualizer({
             width: 500,
@@ -51,7 +56,13 @@ export class TableView {
 
                 const tr = document.createElement('tr');
 
+                const rowId = row.rowid;
+
                 Object.keys(row).forEach((columnKey) => {
+                    if (columnKey === 'rowid') {
+                        return;
+                    }
+
                     const value = row[columnKey];
                     const td = document.createElement('td');
                     const contentEl = document.createElement('div');
@@ -61,6 +72,22 @@ export class TableView {
                         contentEl.innerHTML = 'NULL';
                         contentEl.className = 'nullValue';
                     }
+
+                    td.onclick = () => {
+                        ViewerState.instance.setSelectedCell({
+                            value,
+                            cellRowId: rowId,
+                            columnName: columnKey,
+                            tableName: ViewerState.instance.selectedTable,
+                        });
+
+                        if (this.selectedCell) {
+                            this.selectedCell.classList.remove('selected');
+                        }
+
+                        td.classList.add('selected');
+                        this.selectedCell = td;
+                    };
 
                     td.appendChild(contentEl);
                     tr.appendChild(td);
@@ -97,6 +124,22 @@ export class TableView {
         };
         this.viewHeader.appendChild(updateBtn);
 
+        const saveBtn = document.createElement('button');
+        saveBtn.innerText = 'Save changes';
+        saveBtn.onclick = () => {
+            this.saveChanges();
+        };
+        saveBtn.setAttribute('disabled', '');
+        this.viewHeader.appendChild(saveBtn);
+
+        const revertBtn = document.createElement('button');
+        revertBtn.innerText = 'Revert changes';
+        revertBtn.onclick = () => {
+            this.revertChanges();
+        };
+        revertBtn.setAttribute('disabled', '');
+        this.viewHeader.appendChild(revertBtn);
+
         this.rootElement.appendChild(this.viewHeader);
 
         this.container = document.createElement('div');
@@ -112,6 +155,18 @@ export class TableView {
         this.container.appendChild(table);
 
         this.rootElement.appendChild(this.container);
+
+        this.viewerElem.addEventListener('hasChanges', (event) => {
+            const { detail: hasChanges } = event;
+
+            if (hasChanges) {
+                saveBtn.removeAttribute('disabled');
+                revertBtn.removeAttribute('disabled');
+            } else {
+                saveBtn.setAttribute('disabled', '');
+                revertBtn.setAttribute('disabled', '');
+            }
+        });
     }
 
     private buildHeader(rows: any[]) {
@@ -119,7 +174,10 @@ export class TableView {
             return;
         }
 
-        const schema = rows.length > 0 ? Object.keys(rows[0]) : [];
+        const schema =
+            rows.length > 0
+                ? Object.keys(rows[0]).filter((column) => column !== 'rowid')
+                : [];
 
         if (schema.length > 0) {
             this.columnNames = schema;
@@ -149,7 +207,7 @@ export class TableView {
         });
     }
 
-    public setTable(name: string) {
+    private setTable(name: string) {
         if (this.tableName === name) {
             return;
         }
@@ -162,7 +220,7 @@ export class TableView {
     }
 
     private requestRows(): void {
-        let sql = `SELECT * FROM ${this.tableName}`;
+        let sql = `SELECT "_rowid_",* FROM ${this.tableName}`;
 
         const filterSql: string[] = [];
         Object.entries(this.fitlers).forEach((filterEntry) => {
@@ -179,6 +237,21 @@ export class TableView {
         }
 
         this.queryRunner.runQuery({ sql, parameters: [] });
+    }
+
+    private saveChanges(): void {
+        const sql = 'RELEASE "RESTOREPOINT";';
+        this.queryRunner.runQuery({ sql, parameters: [] });
+        ViewerState.instance.setHasChanges(false);
+    }
+
+    private revertChanges(): void {
+        const sql = 'ROLLBACK TO SAVEPOINT "RESTOREPOINT";';
+        this.queryRunner.runQuery({ sql, parameters: [] });
+
+        this.requestRows();
+
+        ViewerState.instance.setHasChanges(false);
     }
 
     private scheduleUpdate() {

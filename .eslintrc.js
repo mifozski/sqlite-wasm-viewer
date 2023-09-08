@@ -19,6 +19,7 @@ module.exports = {
         'import/no-unresolved': 'off',
         'import/extensions': 'off',
         '@typescript-eslint/ban-ts-comment': 'off',
+        'no-underscore-dangle': 'off',
         'no-use-before-define': 'off',
         'no-plusplus': 'off',
         'prefer-destructuring': ['error', { object: true, array: false }],

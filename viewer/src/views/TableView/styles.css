@@ -57,10 +57,20 @@
     border: 1px solid lightgray;
 }
 
+#table_container td.selected {
+    background-color: lightslategray;
+    color: white;
+}
+
 #table_container td div {
     height: 40px;
+    box-sizing: border-box;
+    display: -webkit-box;
+    padding: 4px;
     text-overflow: ellipsis;
     overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 #table_container .nullValue {
