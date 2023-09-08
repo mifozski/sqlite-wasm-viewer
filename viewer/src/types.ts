@@ -8,6 +8,7 @@ export type DbWorkerInput =
               sql: string;
               parameters: ReadonlyArray<unknown>;
           };
+          label?: string;
       }
     | {
           readonly type: 'readSchema';
@@ -24,6 +25,7 @@ export type DbWorkerOutput =
               tableName: string;
               updates?: { changes: any[]; lastInsertRowid: number };
           };
+          label?: string;
       };
 
 export type Database = {

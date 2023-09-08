@@ -118,9 +118,11 @@ export function showViewer(): void {
 
                 explorerView?.addDatabaseItem(dbs[message.data.dbName]);
             } else if (message.data.type === 'onQuery') {
-                tableViewer?.setTableResults(
-                    message.data.result.resultRows || []
-                );
+                if (message.data.label === 'tableView') {
+                    tableViewer?.setTableResults(
+                        message.data.result.resultRows || []
+                    );
+                }
             }
         };
 

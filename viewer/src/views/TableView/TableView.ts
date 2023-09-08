@@ -236,7 +236,7 @@ export class TableView {
             sql += ` WHERE ${filterSql.join(' AND ')} ESCAPE '\\'`;
         }
 
-        this.queryRunner.runQuery({ sql, parameters: [] });
+        this.queryRunner.runQuery({ sql, parameters: [] }, 'tableView');
     }
 
     private saveChanges(): void {

@@ -14,8 +14,8 @@ export class QueryRunner {
         this.listeners = [];
     }
 
-    runQuery(query: Query) {
-        this.db.post({ type: 'query', query });
+    runQuery(query: Query, label?: string) {
+        this.db.post({ type: 'query', query, label });
 
         this.listeners.forEach((listener) => {
             listener(query);

@@ -83,6 +83,7 @@ export class DbViewerWorker {
                         this.sendMessage({
                             type: 'onQuery',
                             result: { resultRows, tableName: '' },
+                            label: message.data.label,
                         });
                     } else {
                         const changes = this.sqliteCApi.sqlite3_changes(
