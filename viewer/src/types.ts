@@ -4,7 +4,10 @@ export type DbWorkerInput =
       }
     | {
           readonly type: 'query';
-          readonly query: { sql: string; parameters: ReadonlyArray<unknown> };
+          readonly query: {
+              sql: string;
+              parameters: ReadonlyArray<unknown>;
+          };
       }
     | {
           readonly type: 'readSchema';
@@ -12,11 +15,10 @@ export type DbWorkerInput =
       };
 
 export type DbWorkerOutput =
-    | { readonly type: 'onReady'; dbs: string[] }
+    | { readonly type: 'onReady' }
     | { readonly type: 'onSchema'; dbName: string; schema: string[] }
     | {
           readonly type: 'onQuery';
-          readonly requestId: number;
           readonly result: {
               resultRows?: any[];
               tableName: string;

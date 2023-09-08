@@ -1,7 +1,3 @@
-/*
- * Copyright 2023-present MysticEggs Co. All rights reserved.
- */
-
 // @ts-expect-error Missing types
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import { DbWorkerInput, DbWorkerOutput } from './types';
@@ -33,18 +29,9 @@ export class DbViewerWorker {
             sqlite3InitModule().then(async (sqlite3: any) => {
                 this.sqlite = sqlite3;
                 this.sqliteCApi = sqlite3.capi;
-                // this.sqliteApi = sqlite3.capi;
-                // console.log(sqlite3);
-                // this.sqliteDb = new sqlite3.oo1.OpfsDb(
-                //     `/mininote/${dbName}.db`,
-                //     'c'
-                // );
-                // console.log(this.sqliteDb);
-
-                const dbs = await collectDbFiles();
 
                 this.initialized = true;
-                this.sendMessage({ type: 'onReady', dbs });
+                this.sendMessage({ type: 'onReady' });
             });
         }
 
@@ -77,10 +64,8 @@ export class DbViewerWorker {
 
                     const isReader =
                         this.sqliteCApi.sqlite3_column_count(rawStatement) > 1;
-                    // console.log('rawStatement col count:', isReader);
-                    const resultRows = [];
+                    const resultRows: any[] = [];
                     try {
-                        // console.log('params:', parameters);
                         if (parameters?.length > 0) {
                             rawStatement.bind(parameters);
                         }
@@ -97,14 +82,12 @@ export class DbViewerWorker {
                     if (isReader) {
                         this.sendMessage({
                             type: 'onQuery',
-                            requestId: message.data.requestId,
-                            result: { resultRows },
+                            result: { resultRows, tableName: '' },
                         });
                     } else {
                         const changes = this.sqliteCApi.sqlite3_changes(
                             this.sqliteDb.pointer
                         );
-                        // console.log('totat changes:', changes);
                         const lastInsertRowid =
                             this.sqliteCApi.sqlite3_last_insert_rowid(
                                 this.sqliteDb.pointer
@@ -114,8 +97,7 @@ export class DbViewerWorker {
 
                         this.sendMessage({
                             type: 'onQuery',
-                            requestId: message.data.requestId,
-                            result: { resultRows, updates },
+                            result: { resultRows, updates, tableName: '' },
                         });
                     }
                 }
@@ -129,35 +111,4 @@ export class DbViewerWorker {
     sendMessage(message: DbWorkerOutput) {
         postMessage(message);
     }
-}
-
-async function collectDbFiles(): Promise<string[]> {
-    const root = await navigator.storage.getDirectory();
-
-    const dbFileHandlers = await getDbFiles(root);
-
-    return Promise.all(
-        dbFileHandlers.map((dbFile) => {
-            return root.resolve(dbFile).then((parts) => parts?.join('/') || '');
-        })
-    );
-}
-
-async function getDbFiles(
-    root: FileSystemDirectoryHandle
-): Promise<FileSystemFileHandle[]> {
-    let dbs: FileSystemFileHandle[] = [];
-
-    for await (const handle of root.values()) {
-        const child = handle;
-
-        if (child.kind === 'directory') {
-            const childDbs = await getDbFiles(child);
-            dbs = dbs.concat(dbs, ...childDbs);
-        } else if (child.name.endsWith('.db')) {
-            dbs.push(child);
-        }
-    }
-
-    return dbs;
 }

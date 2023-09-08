@@ -13,8 +13,6 @@ export class TableView {
 
     private headerRow: HTMLTableRowElement;
 
-    private filterRow: HTMLTableRowElement;
-
     private bodyRoot: HTMLTableSectionElement;
 
     private virtualizer: ListVirtualizer;
@@ -110,10 +108,6 @@ export class TableView {
         this.headerRow = document.createElement('tr');
         tableHeader.appendChild(this.headerRow);
 
-        const tableFilter = table.createTHead();
-        this.filterRow = document.createElement('tr');
-        tableFilter.appendChild(this.filterRow);
-
         this.bodyRoot = table.createTBody();
         this.container.appendChild(table);
 
@@ -132,14 +126,14 @@ export class TableView {
         }
 
         this.headerRow.innerHTML = '';
-        this.filterRow.innerHTML = '';
         this.columnNames.forEach((column) => {
-            const columnName = document.createElement('th');
-            columnName.innerHTML = column;
+            const columnHeader = document.createElement('th');
+            columnHeader.className = 'columnHeaderCell';
 
-            this.headerRow.appendChild(columnName);
+            columnHeader.innerHTML = column;
 
             const filterFieldCell = document.createElement('th');
+            filterFieldCell.className = 'columnFilterCell';
             const filterField = document.createElement('input');
             filterField.oninput = () => {
                 this.fitlers[column] = filterField.value;
@@ -149,7 +143,9 @@ export class TableView {
 
             filterFieldCell.appendChild(filterField);
 
-            this.filterRow.appendChild(filterFieldCell);
+            this.headerRow.appendChild(columnHeader);
+
+            columnHeader.appendChild(filterFieldCell);
         });
     }
 

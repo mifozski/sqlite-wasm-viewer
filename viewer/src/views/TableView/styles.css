@@ -41,12 +41,20 @@
     position: relative;
 }
 
-#table_container th {
-    height: 40px;
+#table_container .columnHeaderCell {
+    height: 60px;
     position: sticky;
     top: 0;
     background-color: darkgray;
     z-index: 2;
+}
+
+#table_container .columnFilterCell {
+    padding-top: 5px;
+}
+
+#table_container td, #table_container .columnHeaderCell {
+    border: 1px solid lightgray;
 }
 
 #table_container td div {

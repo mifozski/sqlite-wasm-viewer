@@ -1,6 +1,6 @@
 {
   "name": "sqlite-wasm-viewer",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A SQLite OPFS viewer that allows to see the schema and run SQL commands",
   "main": "src/index.ts",
   "scripts": {
@@ -30,9 +30,6 @@
     "typescript": "^5.1.6"
   },
   "packageManager": "yarn@3.6.1",
-  "dependencies": {
-    "sql-highlight": "^4.3.3"
-  },
   "peerDependencies": {
     "@sqlite.org/sqlite-wasm": "^3.x.x"
   }

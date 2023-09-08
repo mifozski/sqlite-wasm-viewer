@@ -7075,13 +7075,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sql-highlight@npm:^4.3.3":
-  version: 4.3.3
-  resolution: "sql-highlight@npm:4.3.3"
-  checksum: 25698dfca19bb7cf025b44b3df6769f1a7f4afd88807efc7b68aadd9f892e0d8ef64b35c0a51593135a5b376584da1daf4455ed1764730bb2033f2bfad26c44c
-  languageName: node
-  linkType: hard
-
 "sqlite-wasm-tester-app@workspace:tester-app":
   version: 0.0.0-use.local
   resolution: "sqlite-wasm-tester-app@workspace:tester-app"
@@ -7110,7 +7103,6 @@ __metadata:
     eslint-plugin-prettier: ^5.0.0
     nodemon: ^3.0.1
     prettier: ^3.0.1
-    sql-highlight: ^4.3.3
     typescript: ^5.1.6
   peerDependencies:
     "@sqlite.org/sqlite-wasm": ^3.x.x

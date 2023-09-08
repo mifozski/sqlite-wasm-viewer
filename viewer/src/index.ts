@@ -1,11 +1,12 @@
 import './styles.css';
 
-import { DbWorkerOutput } from './types';
+import { Database, DbWorkerOutput } from './types';
 import { TableView } from './views/TableView/TableView';
 import { ExecuteSQLView } from './views/ExecuteSQLView/ExecuteSQLView';
 import { QueryRunner } from './QueryRunner';
 import { initSqlLogView } from './views/SqlLogView/SqlLogView';
 import { DatabaseItem, ExplorerView } from './views/ExplorerView/ExplorerView';
+import { collectDbFiles } from './dbScanner';
 
 let viewer: HTMLDivElement | null = null;
 
@@ -20,6 +21,25 @@ let rightPanel: HTMLDivElement | null = null;
 let explorerView: ExplorerView | null = null;
 
 let queryRunner: QueryRunner | null = null;
+
+type Config = {
+    isSqliteDatabase: (fileName: string) => boolean;
+};
+
+const defaultSqliteExtension = ['db', 'sqlite'];
+
+const config: Config = {
+    isSqliteDatabase: (filename: string) => {
+        return defaultSqliteExtension.some((ext) =>
+            filename.endsWith(`.${ext}`)
+        );
+    },
+};
+
+export function setConfig(userConfig: Partial<Config>) {
+    Object.assign(config, userConfig);
+    Object.freeze(config);
+}
 
 export function showViewer(): void {
     if (!viewer) {
@@ -65,18 +85,25 @@ export function showViewer(): void {
             tableViewer?.setTable(tableName);
         });
 
+        const collectDbFilesPromise = collectDbFiles(config.isSqliteDatabase);
+
         const dbs: { [dbFilepath: string]: DatabaseItem } = {};
         worker.onmessage = (message: MessageEvent<DbWorkerOutput>): void => {
             if (message.data.type === 'onReady') {
-                message.data.dbs.forEach((dbPath) => {
-                    const dbFilepath = dbPath;
-                    const dbName = dbPath;
-                    dbs[dbFilepath] = {
-                        filename: dbName,
-                        tables: [],
-                    };
+                collectDbFilesPromise.then((dbFiles) => {
+                    dbFiles.forEach((dbFile) => {
+                        const dbFilepath = dbFile;
+                        const dbName = dbFile;
+                        dbs[dbFilepath] = {
+                            filename: dbName,
+                            tables: [],
+                        };
 
-                    worker.postMessage({ type: 'readSchema', path: dbPath });
+                        worker.postMessage({
+                            type: 'readSchema',
+                            path: dbFile,
+                        });
+                    });
                 });
             } else if (message.data.type === 'onSchema') {
                 const tables = message.data.schema.map((tableSchema) => {
@@ -87,16 +114,18 @@ export function showViewer(): void {
 
                 explorerView?.addDatabaseItem(dbs[message.data.dbName]);
             } else if (message.data.type === 'onQuery') {
-                tableViewer?.setTableResults(message.data.result.resultRows);
+                tableViewer?.setTableResults(
+                    message.data.result.resultRows || []
+                );
             }
         };
 
-        const db = {
+        const db: Database = {
             post: (message) => {
                 worker.postMessage(message);
             },
             on: (message) => {
-                worker.onmessage(message);
+                worker.onmessage?.(message);
             },
         };
 

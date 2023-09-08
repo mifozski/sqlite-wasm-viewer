@@ -5,14 +5,19 @@ const importDbBtn = document.getElementById(
 ) as HTMLButtonElement;
 
 importDbBtn.onclick = async () => {
-    const [handle] = await window.showOpenFilePicker();
+    let handle: FileSystemFileHandle | undefined;
+    try {
+        [handle] = await window.showOpenFilePicker();
+    } catch {
+        return;
+    }
     if (!handle) {
         return;
     }
 
     const root = await navigator.storage.getDirectory();
 
-    const targetFile = await root.getFileHandle('ImportedDB.db', {
+    const targetFile = await root.getFileHandle(handle.name, {
         create: true,
     });
 
