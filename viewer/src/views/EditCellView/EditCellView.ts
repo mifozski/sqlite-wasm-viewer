@@ -37,7 +37,7 @@ export class EditCellView {
         const header = document.createElement('div');
         header.className = 'viewHeader';
         header.innerText = 'Edit Cell';
-        this.rootEl.appendChild(header);
+        container.appendChild(header);
 
         this.textArea = document.createElement('textarea');
         this.textArea.id = 'execute_sql_textarea';
@@ -53,10 +53,12 @@ export class EditCellView {
 
     private handleApplyEdit() {
         if (this.textArea.value) {
-            this.queryRunner?.runQuery({
-                sql: 'SAVEPOINT "RESTOREPOINT"',
-                parameters: [],
-            });
+            if (!ViewerState.instance.hasChanges) {
+                this.queryRunner?.runQuery({
+                    sql: 'SAVEPOINT "RESTOREPOINT"',
+                    parameters: [],
+                });
+            }
             this.queryRunner?.runQuery({
                 sql: `UPDATE ${this.currentCell?.tableName} SET "${this.currentCell?.columnName}"=? WHERE "_rowid_"='${this.currentCell?.cellRowId}'`,
                 parameters: [this.textArea.value],

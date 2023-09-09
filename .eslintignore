@@ -1,5 +1,6 @@
 /node_modules/**
-/build
+**/build/**
+**/dist/**
 
 # yarn
 .pnp.*

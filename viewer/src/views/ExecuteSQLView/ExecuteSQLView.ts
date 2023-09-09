@@ -20,7 +20,7 @@ export class ExecuteSQLView {
         const header = document.createElement('div');
         header.className = 'viewHeader';
         header.innerText = 'Execute SQL';
-        this.rootEl.appendChild(header);
+        container.appendChild(header);
 
         this.textArea = document.createElement('textarea');
         this.textArea.id = 'execute_sql_textarea';

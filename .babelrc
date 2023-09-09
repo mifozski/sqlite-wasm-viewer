@@ -1,6 +1,0 @@
-{
-  "preset2s": [
-    "@babel/typescript",
-    "@babel/env"
-  ]
-}

@@ -1,6 +1,5 @@
 #sql_log_container {
     flex-grow: 1;
-    margin-top: 5px;
     display: flex;
     flex-direction: column;
 }

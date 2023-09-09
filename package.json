@@ -2,9 +2,9 @@
   "private": true,
   "scripts": {
     "start": "webpack serve",
-    "build": "babel ./viewer/src/index.ts --out-dir ./build",
-    "test": "babel viewer/src/index.ts --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
-    "lint": "eslint ."
+    "build": "webpack",
+    "lint": "eslint .",
+    "publish": "cd viewer && yarn publish"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.9",

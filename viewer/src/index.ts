@@ -38,8 +38,10 @@ const config: Config = {
     },
 };
 
-export function setConfig(userConfig: Partial<Config>) {
-    Object.assign(config, userConfig);
+export function setConfig(userConfig?: Partial<Config>) {
+    if (userConfig) {
+        Object.assign(config, userConfig);
+    }
     Object.freeze(config);
 }
 

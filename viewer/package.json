@@ -1,16 +1,28 @@
 {
   "name": "sqlite-wasm-viewer",
   "version": "0.1.0",
-  "description": "A SQLite OPFS viewer that allows to see the schema and run SQL commands",
-  "main": "src/index.ts",
+  "description": "A SQLite OPFS viewer that allows to inspect the database and run SQL commands",
+  "main": "dist/index.js",
   "scripts": {
     "build": "babel ./src --out-dir ./build",
-    "start": "nodemon --exec babel-node viewer/src/index.ts",
+    "publish": "webpack --config ./webpack.config.js",
     "lint": "eslint ."
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["sqlite", "opfs", "wasm", "sql"],
+  "author": {
+    "name": "Andrey Efimov",
+    "email": "mifozski@gmail.com",
+    "url": "https://github.com/mifozski"
+  },
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mifozski/sqlite-wasm-viewer.git"
+  },
+  "files": [
+    "dist/",
+    "index.d.ts"
+  ],
   "devDependencies": {
     "@babel/cli": "^7.22.9",
     "@babel/core": "^7.22.9",
