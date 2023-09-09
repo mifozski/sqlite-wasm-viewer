@@ -36,8 +36,8 @@ export class TableView {
         this.buildDomTemplate();
 
         this.viewerElem.addEventListener('tableSelected', (event) => {
-            const { detail: tableName } = event;
-            this.setTable(tableName);
+            const { detail: selectedTable } = event;
+            this.setTable(selectedTable.tableName);
         });
 
         this.virtualizer = new ListVirtualizer({
@@ -56,7 +56,7 @@ export class TableView {
 
                 const tr = document.createElement('tr');
 
-                const rowId = row.rowid;
+                const rowId = row.rowid ?? (i + 1).toString();
 
                 Object.keys(row).forEach((columnKey) => {
                     if (columnKey === 'rowid') {
@@ -78,7 +78,9 @@ export class TableView {
                             value,
                             cellRowId: rowId,
                             columnName: columnKey,
-                            tableName: ViewerState.instance.selectedTable,
+                            tableName:
+                                ViewerState.instance.selectedTable?.tableName ||
+                                '',
                         });
 
                         if (this.selectedCell) {

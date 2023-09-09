@@ -8,6 +8,7 @@ export type DbWorkerInput =
               sql: string;
               parameters: ReadonlyArray<unknown>;
           };
+          databasePath: string;
           label?: string;
       }
     | {

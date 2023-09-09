@@ -1,15 +1,43 @@
 # SQLite Wasm Viewer
 
-SQLite Wasm Viewer is an integrated view to inspect the contents of the SQLite databases created by SQLite Wasm module stored in OPFS storage. It also offers query executionm, and table filtering capabilities.
+A simple web-based SQLite browser that lets you inspect SQLite databases created by the [SQLite Wasm module](https://github.com/sqlite/sqlite-wasm) and stored in OPFS storage. It also supports running queries and filtering tables.
 
-# Usage
+![Viewer](screenshot.png)
+
+# Installation
 ```
-npm install --save-dev sqlite-wasm-viewer
+npm install --save sqlite-wasm-viewer
 ```
 
 or 
 
 ```
-yarn add -D sqlite-wasm-viewer
+yarn add sqlite-wasm-viewer
 ```
 
+# Usage
+To open the viewer:
+```js
+import { showViewer } from 'sqlite-wasm-viewer';
+
+showViewer();
+```
+
+By default, only files ending with '.db' or '.sqlite' are recognized as SQLite databases, but you can modify this behavior as follows:
+```js
+import { showViewer, setConfig } from 'sqlite-wasm-viewer';
+
+setConfig({
+  isSqliteDatabase: databaseName => {
+    // return true if databaseName is an SQLite db
+  },
+});
+
+showViewer();
+```
+
+# Development
+A testing app will be available on `http://localhost:9000` after running:
+```
+yarn start
+```

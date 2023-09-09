@@ -40,7 +40,7 @@ export class ExplorerView {
                 '#explorer_tree > .table'
             ) as HTMLElement | undefined;
             if (firstTable) {
-                this.selectTable(firstTable);
+                this.selectTable(firstTable, databaseItem);
             }
         }
     }
@@ -71,7 +71,7 @@ export class ExplorerView {
             tableItem.innerText = table;
             tableItem.className = 'table';
             tableItem.onclick = () => {
-                this.selectTable(tableItem);
+                this.selectTable(tableItem, databaseItem);
             };
 
             dbRoot.appendChild(tableItem);
@@ -80,7 +80,10 @@ export class ExplorerView {
         this.containerEl.appendChild(dbRoot);
     }
 
-    private selectTable(tableEl: HTMLElement | null) {
+    private selectTable(
+        tableEl: HTMLElement | null,
+        databaseItem: DatabaseItem
+    ) {
         if (tableEl) {
             const tableName = tableEl.innerText;
 
@@ -88,7 +91,12 @@ export class ExplorerView {
             tableEl.classList.add('selected');
             this.selectedItem = tableEl;
 
-            ViewerState.instance.setSelectedTable(tableName);
+            const databasePath = databaseItem.filename;
+
+            ViewerState.instance.setSelectedTable({
+                tableName,
+                databasePath,
+            });
         }
     }
 }

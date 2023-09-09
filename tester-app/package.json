@@ -1,13 +1,8 @@
 {
   "name": "sqlite-wasm-tester-app",
   "version": "1.0.0",
-  "description": "A SQLite OPFS viewer that allows to see the schema and run SQL commands",
+  "description": "A web page to test the viewer",
   "main": "index.js",
-  "scripts": {
-    "build": "babel ./src --out-dir ./build",
-    "start": "nodemon --exec babel-node src/index.ts",
-    "lint": "eslint ."
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",

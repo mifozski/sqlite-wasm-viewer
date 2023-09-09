@@ -5,6 +5,11 @@ export interface SelectedCell {
     cellRowId: string;
 }
 
+export interface SelectedTable {
+    tableName: string;
+    databasePath: string;
+}
+
 export class ViewerState {
     private static _instance: ViewerState;
 
@@ -14,7 +19,7 @@ export class ViewerState {
 
     selectedCell: SelectedCell | undefined;
 
-    selectedTable: string;
+    selectedTable: SelectedTable | undefined;
 
     hasChanges = false;
 
@@ -29,10 +34,10 @@ export class ViewerState {
         this.viewerElem.dispatchEvent(event);
     }
 
-    setSelectedTable(tableName: string) {
-        this.selectedTable = tableName;
+    setSelectedTable(table: SelectedTable) {
+        this.selectedTable = table;
 
-        const event = new CustomEvent('tableSelected', { detail: tableName });
+        const event = new CustomEvent('tableSelected', { detail: table });
         this.viewerElem.dispatchEvent(event);
     }
 

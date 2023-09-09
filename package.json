@@ -2,7 +2,6 @@
   "private": true,
   "scripts": {
     "start": "webpack serve",
-    "build": "webpack",
     "lint": "eslint .",
     "publish": "cd viewer && yarn publish"
   },

@@ -9,11 +9,11 @@ export class DbViewerWorker {
 
     sqliteCApi: any;
 
-    sqliteDb: any;
+    dbsByPath: { [path: string]: any };
 
     constructor() {
         this.initialized = false;
-        this.sqliteDb = null;
+        this.dbsByPath = {};
     }
 
     post(message: MessageEvent<DbWorkerInput>) {
@@ -40,11 +40,14 @@ export class DbViewerWorker {
                 {
                     const { path } = message.data;
 
-                    this.sqliteDb = new this.sqlite.oo1.OpfsDb(path, 'c');
+                    this.dbsByPath[path] = new this.sqlite.oo1.OpfsDb(
+                        path,
+                        'c'
+                    );
 
                     const sql = `SELECT name, sql FROM sqlite_master WHERE type='table' ORDER BY name`;
 
-                    const result = this.sqliteDb.exec({
+                    const result = this.dbsByPath[path].exec({
                         sql,
                         returnValue: 'resultRows',
                     });
@@ -59,8 +62,11 @@ export class DbViewerWorker {
             case 'query':
                 {
                     const { sql, parameters } = message.data.query;
+                    const { databasePath } = message.data;
 
-                    const rawStatement = this.sqliteDb.prepare(sql);
+                    const db = this.dbsByPath[databasePath];
+
+                    const rawStatement = db.prepare(sql);
 
                     const isReader =
                         this.sqliteCApi.sqlite3_column_count(rawStatement) > 1;
@@ -87,11 +93,11 @@ export class DbViewerWorker {
                         });
                     } else {
                         const changes = this.sqliteCApi.sqlite3_changes(
-                            this.sqliteDb.pointer
+                            db.pointer
                         );
                         const lastInsertRowid =
                             this.sqliteCApi.sqlite3_last_insert_rowid(
-                                this.sqliteDb.pointer
+                                db.pointer
                             );
 
                         const updates = { changes, lastInsertRowid };

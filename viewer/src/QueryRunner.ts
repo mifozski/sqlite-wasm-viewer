@@ -1,4 +1,5 @@
 import { Database } from './types';
+import { ViewerState } from './viewerState';
 
 export interface Query {
     sql: string;
@@ -14,8 +15,18 @@ export class QueryRunner {
         this.listeners = [];
     }
 
-    runQuery(query: Query, label?: string) {
-        this.db.post({ type: 'query', query, label });
+    runQuery(query: Query, label?: string): void {
+        const currentDatabase = ViewerState.instance.selectedTable;
+        if (!currentDatabase) {
+            return;
+        }
+
+        this.db.post({
+            type: 'query',
+            query,
+            databasePath: currentDatabase.databasePath,
+            label,
+        });
 
         this.listeners.forEach((listener) => {
             listener(query);
