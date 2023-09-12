@@ -6,7 +6,6 @@
     "eslint.validate": [
         "javascript",
         "typescript",
-        "typescriptreact",
         "json"
     ],
     "emmet.includeLanguages": {

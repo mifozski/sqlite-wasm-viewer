@@ -1,6 +1,12 @@
 export async function collectDbFiles(
     isSqliteDatabase: (fileName: string) => boolean
 ): Promise<string[]> {
+    if (!navigator.storage) {
+        // eslint-disable-next-line no-console
+        console.error('navigator.storage is not available in this context');
+        return [];
+    }
+
     const root = await navigator.storage.getDirectory();
 
     const dbFileHandlers = await getDbFiles(root, isSqliteDatabase);

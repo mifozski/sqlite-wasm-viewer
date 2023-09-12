@@ -85,7 +85,7 @@ export function showViewer(): void {
 
         viewer.append(rightPanel);
 
-        const worker = new Worker(new URL('DbWorker.ts', import.meta.url), {
+        const worker = new Worker(new URL('./DbWorker', import.meta.url), {
             type: 'module',
         });
 

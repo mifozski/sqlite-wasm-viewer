@@ -158,7 +158,7 @@ export class TableView {
 
         this.rootElement.appendChild(this.container);
 
-        this.viewerElem.addEventListener('hasChanges', (event) => {
+        this.viewerElem.addEventListener('dbHasChanges', (event) => {
             const { detail: hasChanges } = event;
 
             if (hasChanges) {

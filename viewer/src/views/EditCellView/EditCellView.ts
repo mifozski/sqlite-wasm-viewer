@@ -1,13 +1,8 @@
+import { CurrentCell } from '../../types';
 import { QueryRunner } from '../../QueryRunner';
 import { ViewerState } from '../../viewerState';
 
 import './styles.css';
-
-interface CurrentCell {
-    tableName: string;
-    columnName: string;
-    cellRowId: string;
-}
 
 export class EditCellView {
     queryRunner: QueryRunner | undefined;

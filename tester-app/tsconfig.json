@@ -1,12 +1,6 @@
 {
     "compilerOptions": {
-        "lib": [
-            "esnext",
-            "dom",
-            "Webworker"
-        ],
         "baseUrl": ".",
-        "types": ["@types/wicg-file-system-access"],
         "paths": {
             "src/*": [
                 "src/*"
@@ -17,13 +11,11 @@
         }
     },
     "include": [
-        "src/**/*.tsx",
         "src/**/*.ts",
         "src/**/*d.ts"
     ],
     "exclude": [
         "node_modules",
-        "**/build",
     ],
     "references": [
         {

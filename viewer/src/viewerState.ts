@@ -1,14 +1,4 @@
-export interface SelectedCell {
-    value: string;
-    tableName: string;
-    columnName: string;
-    cellRowId: string;
-}
-
-export interface SelectedTable {
-    tableName: string;
-    databasePath: string;
-}
+import { CurrentCell, CurrentTable } from './types';
 
 export class ViewerState {
     private static _instance: ViewerState;
@@ -17,9 +7,9 @@ export class ViewerState {
         return ViewerState._instance;
     }
 
-    selectedCell: SelectedCell | undefined;
+    selectedCell: CurrentCell | undefined;
 
-    selectedTable: SelectedTable | undefined;
+    selectedTable: CurrentTable | undefined;
 
     hasChanges = false;
 
@@ -27,14 +17,14 @@ export class ViewerState {
         ViewerState._instance = this;
     }
 
-    setSelectedCell(cell: SelectedCell) {
+    setSelectedCell(cell: CurrentCell) {
         this.selectedCell = cell;
 
         const event = new CustomEvent('cellSelected', { detail: cell });
         this.viewerElem.dispatchEvent(event);
     }
 
-    setSelectedTable(table: SelectedTable) {
+    setSelectedTable(table: CurrentTable) {
         this.selectedTable = table;
 
         const event = new CustomEvent('tableSelected', { detail: table });
@@ -44,7 +34,7 @@ export class ViewerState {
     setHasChanges(hasChanges: boolean) {
         this.hasChanges = hasChanges;
 
-        const event = new CustomEvent('hasChanges', { detail: hasChanges });
+        const event = new CustomEvent('dbHasChanges', { detail: hasChanges });
         this.viewerElem.dispatchEvent(event);
     }
 }
