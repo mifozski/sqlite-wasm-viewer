@@ -28,11 +28,12 @@
 }
 
 #table_container table {
+    flex: 1;
+    table-layout: fixed;
+    width: 100%;
     background-color: whitesmoke;
     border-collapse: collapse;
     border-spacing: 0;
-    flex: 1;
-    flex-direction: column;
 }
 
 #table_container tbody {
