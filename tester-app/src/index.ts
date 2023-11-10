@@ -1,4 +1,18 @@
-import { showViewer } from 'sqlite-wasm-viewer';
+import {
+    showViewer,
+    setConfig,
+    defaultIsSqliteDatabase,
+} from 'sqlite-wasm-viewer';
+
+setConfig({
+    isSqliteDatabase: (filename) => {
+        if (filename.endsWith('exb')) {
+            return true;
+        }
+
+        return defaultIsSqliteDatabase(filename);
+    },
+});
 
 const importDbBtn = document.getElementById(
     'import_db_btn'

@@ -30,12 +30,12 @@ type Config = {
 
 const defaultSqliteExtension = ['db', 'sqlite'];
 
+export function defaultIsSqliteDatabase(filename: string): boolean {
+    return defaultSqliteExtension.some((ext) => filename.endsWith(`.${ext}`));
+}
+
 const config: Config = {
-    isSqliteDatabase: (filename: string) => {
-        return defaultSqliteExtension.some((ext) =>
-            filename.endsWith(`.${ext}`)
-        );
-    },
+    isSqliteDatabase: defaultIsSqliteDatabase,
 };
 
 export function setConfig(userConfig?: Partial<Config>) {
