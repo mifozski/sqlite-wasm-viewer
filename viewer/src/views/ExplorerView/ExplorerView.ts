@@ -68,11 +68,14 @@ export class ExplorerView {
         dbRoot.appendChild(dbItem);
         databaseItem.tables.forEach((table) => {
             const tableItem = document.createElement('div');
-            tableItem.innerText = table;
             tableItem.className = 'table';
             tableItem.onclick = () => {
                 this.selectTable(tableItem, databaseItem);
             };
+
+            const tableItemInner = document.createElement('div');
+            tableItemInner.innerText = table;
+            tableItem.appendChild(tableItemInner);
 
             dbRoot.appendChild(tableItem);
         });

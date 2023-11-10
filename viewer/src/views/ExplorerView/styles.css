@@ -1,6 +1,9 @@
 #explorer_tree {
     padding: 8px;
     padding-left: 20px;
+    overflow-x: clip;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
 }
 
 #explorer_tree > .db {
@@ -22,7 +25,13 @@
 
 #explorer_tree > .table {
     margin-left: 20px;
+    height: 20px;
     cursor: pointer;
+}
+
+#explorer_tree > .table > div {
+    text-overflow: ellipsis;
+    overflow-x: hidden;
 }
 
 #explorer_tree > .table.selected {
