@@ -3,6 +3,7 @@
   "scripts": {
     "start": "webpack serve",
     "build": "cd viewer && yarn build",
+    "build-tester-app": "cd tester-app && yarn build",
     "publish": "yarn lint && cd viewer && yarn publish",
     "lint": "eslint . && yarn ts",
     "ts": "yarn tsc --build viewer/tsconfig.json"

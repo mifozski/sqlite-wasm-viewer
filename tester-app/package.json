@@ -6,6 +6,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "scripts": {
+    "build": "webpack --config ./webpack.prod.js"
+  },
   "packageManager": "yarn@3.6.1",
   "dependencies": {
     "@sqlite.org/sqlite-wasm": "^3.x.x",
