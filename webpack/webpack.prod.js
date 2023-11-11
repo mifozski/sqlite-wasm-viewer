@@ -7,7 +7,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = [
     {
         target: 'web',
-        entry: './src/index.ts',
+        entry: './tester-app/src/index.ts',
         output: {
             path: path.join(__dirname, 'dist'),
             filename: 'index.js',
@@ -33,7 +33,7 @@ module.exports = [
             extensions: ['.ts', '.js'],
             plugins: [
                 new TsconfigPathsPlugin({
-                    configFile: './tsconfig.json',
+                    configFile: './tester-app/tsconfig.json',
                 }),
             ],
         },
@@ -43,7 +43,7 @@ module.exports = [
         },
         plugins: [
             new HtmlWebpackPlugin({
-                template: './src/index.html',
+                template: './tester-app/src/index.html',
             }),
         ],
         devServer: {
@@ -53,7 +53,7 @@ module.exports = [
             compress: true,
             port: 9000,
             historyApiFallback: {
-                index: './src/index.html',
+                index: './tester-app/src/index.html',
             },
             headers: [
                 {
