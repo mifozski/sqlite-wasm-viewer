@@ -63,3 +63,7 @@
     flex-direction: column;
     gap: 5px;
 }
+
+#viewer #right_panel > div {
+    height: 33.33%;
+}
