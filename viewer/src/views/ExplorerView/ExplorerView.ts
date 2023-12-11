@@ -7,6 +7,8 @@ export interface DatabaseItem {
     tables: string[];
 }
 
+const EXPANDED_EXPLORER_ITEMS_KEY = 'expanded_explorer_items';
+
 export class ExplorerView {
     private containerEl: HTMLElement;
 
@@ -28,12 +30,16 @@ export class ExplorerView {
         this.containerEl = document.createElement('div');
         this.containerEl.id = 'explorer_tree';
         rootEl.appendChild(this.containerEl);
+
+        this.expandedItems = JSON.parse(
+            localStorage.getItem(EXPANDED_EXPLORER_ITEMS_KEY) ?? '{}'
+        );
     }
 
     public addDatabaseItem(databaseItem: DatabaseItem): void {
         this.dbs.push(databaseItem);
 
-        this.addDbToDom(databaseItem);
+        this.buildDom();
 
         if (this.selectedItem === null) {
             const firstTable = document.querySelector(
@@ -45,42 +51,88 @@ export class ExplorerView {
         }
     }
 
-    private addDbToDom(databaseItem: DatabaseItem) {
+    private buildDom() {
+        this.containerEl.innerHTML = '';
+        this.dbs.forEach((db) => {
+            this.buildDbGroupDom(db);
+        });
+    }
+
+    private buildDbGroupDom(db: DatabaseItem) {
         const dbRoot = document.createDocumentFragment();
 
         const dbItem = document.createElement('div');
-        dbItem.innerText = databaseItem.filename;
+        dbItem.innerText = db.filename;
         dbItem.className = 'db';
 
+        const tablesContainer = document.createElement('div');
+
+        this.buildExpandArrowDom(dbItem, tablesContainer, db);
+
+        dbRoot.appendChild(dbItem);
+
+        db.tables.forEach((table) => {
+            this.buildTableDom(tablesContainer, table, db);
+        });
+
+        const isExpanded = this.expandedItems[db.filename];
+        tablesContainer.style.display = isExpanded ? 'block' : 'none';
+
+        dbRoot.appendChild(tablesContainer);
+
+        this.containerEl.appendChild(dbRoot);
+    }
+
+    private buildExpandArrowDom(
+        itemElem: HTMLElement,
+        tablesContainer: HTMLElement,
+        db: DatabaseItem
+    ) {
         const expandArrow = document.createElement('div');
         expandArrow.className = 'expand';
         expandArrow.innerText = '>';
         expandArrow.style.cursor = 'pointer';
+
+        const isExpanded = this.expandedItems[db.filename];
+
+        if (isExpanded) {
+            expandArrow.classList.add('expanded');
+        }
+
         expandArrow.onclick = () => {
-            this.expandedItems[databaseItem.filename] =
-                !this.expandedItems[databaseItem.filename];
+            this.expandedItems[db.filename] = !this.expandedItems[db.filename];
+
+            // eslint-disable-next-line no-param-reassign
+            tablesContainer.style.display = this.expandedItems[db.filename]
+                ? 'block'
+                : 'none';
 
             expandArrow.classList.toggle('expanded');
+
+            localStorage.setItem(
+                EXPANDED_EXPLORER_ITEMS_KEY,
+                JSON.stringify(this.expandedItems)
+            );
         };
-        expandArrow.classList.add('expanded');
-        dbItem.appendChild(expandArrow);
+        itemElem.appendChild(expandArrow);
+    }
 
-        dbRoot.appendChild(dbItem);
-        databaseItem.tables.forEach((table) => {
-            const tableItem = document.createElement('div');
-            tableItem.className = 'table';
-            tableItem.onclick = () => {
-                this.selectTable(tableItem, databaseItem);
-            };
+    private buildTableDom(
+        tablesContainer: HTMLElement,
+        tableName: string,
+        db: DatabaseItem
+    ) {
+        const tableItem = document.createElement('div');
+        tableItem.className = 'table';
+        tableItem.onclick = () => {
+            this.selectTable(tableItem, db);
+        };
 
-            const tableItemInner = document.createElement('div');
-            tableItemInner.innerText = table;
-            tableItem.appendChild(tableItemInner);
+        const tableItemInner = document.createElement('div');
+        tableItemInner.innerText = tableName;
+        tableItem.appendChild(tableItemInner);
 
-            dbRoot.appendChild(tableItem);
-        });
-
-        this.containerEl.appendChild(dbRoot);
+        tablesContainer.appendChild(tableItem);
     }
 
     private selectTable(
