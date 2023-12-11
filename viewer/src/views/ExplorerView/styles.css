@@ -16,24 +16,24 @@
     position: absolute;
     top: 0;
     left: -15px;
-    transition: all .3s ease-in;
+    transition: all .1s ease-in;
 }
 
 #explorer_tree .expanded {
     transform: rotate(90deg);
 }
 
-#explorer_tree > .table {
+#explorer_tree .table {
     margin-left: 20px;
     height: 20px;
     cursor: pointer;
 }
 
-#explorer_tree > .table > div {
+#explorer_tree .table > div {
     text-overflow: ellipsis;
     overflow-x: hidden;
 }
 
-#explorer_tree > .table.selected {
+#explorer_tree .table.selected {
     background-color: rgb(128, 128, 128);
 }

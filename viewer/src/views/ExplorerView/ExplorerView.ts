@@ -7,6 +7,12 @@ export interface DatabaseItem {
     tables: string[];
 }
 
+type SelectedTable = {
+    tableName: string;
+    dbName: string;
+    tableElem: HTMLElement;
+};
+
 const EXPANDED_EXPLORER_ITEMS_KEY = 'expanded_explorer_items';
 
 export class ExplorerView {
@@ -16,7 +22,7 @@ export class ExplorerView {
 
     private dbs: DatabaseItem[];
 
-    private selectedItem: HTMLElement | null = null;
+    private selectedItem: SelectedTable | null = null;
 
     constructor(rootEl: HTMLDivElement) {
         this.dbs = [];
@@ -43,7 +49,7 @@ export class ExplorerView {
 
         if (this.selectedItem === null) {
             const firstTable = document.querySelector(
-                '#explorer_tree > .table'
+                '#explorer_tree .table'
             ) as HTMLElement | undefined;
             if (firstTable) {
                 this.selectTable(firstTable, databaseItem);
@@ -67,7 +73,9 @@ export class ExplorerView {
 
         const tablesContainer = document.createElement('div');
 
-        this.buildExpandArrowDom(dbItem, tablesContainer, db);
+        const isExpanded = !(this.expandedItems[db.filename] === false);
+
+        this.buildExpandArrowDom(dbItem, tablesContainer, db, isExpanded);
 
         dbRoot.appendChild(dbItem);
 
@@ -75,7 +83,6 @@ export class ExplorerView {
             this.buildTableDom(tablesContainer, table, db);
         });
 
-        const isExpanded = this.expandedItems[db.filename];
         tablesContainer.style.display = isExpanded ? 'block' : 'none';
 
         dbRoot.appendChild(tablesContainer);
@@ -86,14 +93,13 @@ export class ExplorerView {
     private buildExpandArrowDom(
         itemElem: HTMLElement,
         tablesContainer: HTMLElement,
-        db: DatabaseItem
+        db: DatabaseItem,
+        isExpanded: boolean
     ) {
         const expandArrow = document.createElement('div');
         expandArrow.className = 'expand';
         expandArrow.innerText = '>';
         expandArrow.style.cursor = 'pointer';
-
-        const isExpanded = this.expandedItems[db.filename];
 
         if (isExpanded) {
             expandArrow.classList.add('expanded');
@@ -128,6 +134,14 @@ export class ExplorerView {
             this.selectTable(tableItem, db);
         };
 
+        if (
+            this.selectedItem?.tableName === tableName &&
+            this.selectedItem?.dbName === db.filename
+        ) {
+            this.selectedItem.tableElem = tableItem;
+            tableItem.classList.add('selected');
+        }
+
         const tableItemInner = document.createElement('div');
         tableItemInner.innerText = tableName;
         tableItem.appendChild(tableItemInner);
@@ -142,9 +156,14 @@ export class ExplorerView {
         if (tableEl) {
             const tableName = tableEl.innerText;
 
-            this.selectedItem?.classList.remove('selected');
+            this.selectedItem?.tableElem.classList.remove('selected');
             tableEl.classList.add('selected');
-            this.selectedItem = tableEl;
+
+            this.selectedItem = {
+                dbName: databaseItem.filename,
+                tableName: tableEl.innerText,
+                tableElem: tableEl,
+            };
 
             const databasePath = databaseItem.filename;
 
