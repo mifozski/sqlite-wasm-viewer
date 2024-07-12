@@ -2,7 +2,7 @@ import { ViewerState } from '../../viewerState';
 import { ListVirtualizer } from '../../ListVirtualizer';
 import { QueryRunner } from '../../QueryRunner';
 import './styles.css';
-import { TableViewModel } from './TableViewMode';
+import { TableViewModel } from './TableViewModel';
 
 export class TableView {
     private container: HTMLDivElement;
