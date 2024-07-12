@@ -106,9 +106,12 @@ export class TableView {
 
         this.viewHeaderTitle.innerHTML = this.tableName;
 
-        this.buildHeader(rows);
-
         this.virtualizer.setRowCount(rows.length);
+    }
+
+    setTableColumns(columns: { name: string }[]) {
+        this.columnNames = columns.map((column) => column.name);
+        this.buildHeader();
     }
 
     buildDomTemplate() {
@@ -122,7 +125,7 @@ export class TableView {
         const updateBtn = document.createElement('button');
         updateBtn.innerText = 'Update';
         updateBtn.onclick = () => {
-            this.requestRows();
+            this.requestRows(true);
         };
         this.viewHeader.appendChild(updateBtn);
 
@@ -171,18 +174,9 @@ export class TableView {
         });
     }
 
-    private buildHeader(rows: any[]) {
-        if (this.columnNames.length !== 0) {
+    private buildHeader() {
+        if (this.columnNames.length === 0) {
             return;
-        }
-
-        const schema =
-            rows.length > 0
-                ? Object.keys(rows[0]).filter((column) => column !== 'rowid')
-                : [];
-
-        if (schema.length > 0) {
-            this.columnNames = schema;
         }
 
         this.headerRow.innerHTML = '';
@@ -195,6 +189,16 @@ export class TableView {
             const filterFieldCell = document.createElement('th');
             filterFieldCell.className = 'columnFilterCell';
             const filterField = document.createElement('input');
+            if (this.fitlers[column]) {
+                filterField.value = this.fitlers[column];
+            }
+            filterField.onkeydown = (event) => {
+                if (event.key === 'Escape') {
+                    filterField.value = '';
+                    this.fitlers[column] = '';
+                    this.scheduleUpdate();
+                }
+            };
             filterField.oninput = () => {
                 this.fitlers[column] = filterField.value;
                 this.scheduleUpdate();
@@ -218,10 +222,19 @@ export class TableView {
         this.columnNames = [];
         this.fitlers = {};
 
-        this.requestRows();
+        this.requestRows(true);
     }
 
-    private requestRows(): void {
+    private requestRows(refetchColumns: boolean): void {
+        if (refetchColumns) {
+            const sql = `PRAGMA table_info(${this.tableName});`;
+
+            this.queryRunner.runQuery(
+                { sql, parameters: [] },
+                'tableViewColumns'
+            );
+        }
+
         let sql = `SELECT "_rowid_",* FROM ${this.tableName}`;
 
         const filterSql: string[] = [];
@@ -251,7 +264,7 @@ export class TableView {
         const sql = 'ROLLBACK TO SAVEPOINT "RESTOREPOINT";';
         this.queryRunner.runQuery({ sql, parameters: [] });
 
-        this.requestRows();
+        this.requestRows(true);
 
         ViewerState.instance.setHasChanges(false);
     }
@@ -261,7 +274,7 @@ export class TableView {
             window.clearTimeout(this.updateTimer);
         }
         this.updateTimer = window.setTimeout(() => {
-            this.requestRows();
+            this.requestRows(false);
             this.updateTimer = null;
         }, 300);
     }

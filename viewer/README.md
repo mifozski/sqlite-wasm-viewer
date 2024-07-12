@@ -37,7 +37,8 @@ showViewer();
 ```
 
 # Development
-A testing app will be available on `http://localhost:9000` after running:
+Run:
 ```
 yarn start
 ```
+to start the testing app at `http://localhost:9000`
