@@ -14,6 +14,14 @@ class SqlLogView {
         header.className = 'viewHeader';
         header.innerText = 'SQL Log';
 
+        const clearBtn = document.createElement('button');
+        clearBtn.style.marginLeft = 'auto';
+        clearBtn.innerText = 'Clear';
+        clearBtn.onclick = () => {
+            this.textArea.value = '';
+        };
+        header.appendChild(clearBtn);
+
         container.appendChild(header);
 
         this.textArea = document.createElement('textarea');

@@ -2,6 +2,7 @@ import { ViewerState } from '../../viewerState';
 import { ListVirtualizer } from '../../ListVirtualizer';
 import { QueryRunner } from '../../QueryRunner';
 import './styles.css';
+import { TableViewModel } from './TableViewMode';
 
 export class TableView {
     private container: HTMLDivElement;
@@ -16,17 +17,9 @@ export class TableView {
 
     private virtualizer: ListVirtualizer;
 
-    private rows;
-
-    private tableName: string;
-
-    private columnNames: string[] = [];
-
-    private fitlers: { [column: string]: string } = {};
-
     private updateTimer: number | null = null;
 
-    private selectedCell: HTMLTableCellElement | null = null;
+    private model: TableViewModel;
 
     constructor(
         private viewerElem: HTMLElement,
@@ -34,6 +27,8 @@ export class TableView {
         private queryRunner: QueryRunner
     ) {
         this.buildDomTemplate();
+
+        this.model = new TableViewModel();
 
         this.viewerElem.addEventListener('tableSelected', (event) => {
             const { detail: selectedTable } = event;
@@ -48,7 +43,7 @@ export class TableView {
             contentRoot: this.bodyRoot,
             container: this.container,
             generatorFn: (i: number) => {
-                const row = this.rows[i];
+                const row = this.model.rows[i];
 
                 if (!row) {
                     return null;
@@ -83,12 +78,14 @@ export class TableView {
                                 '',
                         });
 
-                        if (this.selectedCell) {
-                            this.selectedCell.classList.remove('selected');
+                        if (this.model.selectedCell) {
+                            this.model.selectedCell.classList.remove(
+                                'selected'
+                            );
                         }
 
                         td.classList.add('selected');
-                        this.selectedCell = td;
+                        this.model.selectedCell = td;
                     };
 
                     td.appendChild(contentEl);
@@ -102,15 +99,15 @@ export class TableView {
     }
 
     setTableResults(rows: any[]) {
-        this.rows = rows;
+        this.model.rows = rows;
 
-        this.viewHeaderTitle.innerHTML = this.tableName;
+        this.viewHeaderTitle.innerHTML = this.model.tableName;
 
         this.virtualizer.setRowCount(rows.length);
     }
 
     setTableColumns(columns: { name: string }[]) {
-        this.columnNames = columns.map((column) => column.name);
+        this.model.columnNames = columns.map((column) => column.name);
         this.buildHeader();
     }
 
@@ -175,12 +172,12 @@ export class TableView {
     }
 
     private buildHeader() {
-        if (this.columnNames.length === 0) {
+        if (this.model.columnNames.length === 0) {
             return;
         }
 
         this.headerRow.innerHTML = '';
-        this.columnNames.forEach((column) => {
+        this.model.columnNames.forEach((column) => {
             const columnHeader = document.createElement('th');
             columnHeader.className = 'columnHeaderCell';
 
@@ -189,18 +186,18 @@ export class TableView {
             const filterFieldCell = document.createElement('th');
             filterFieldCell.className = 'columnFilterCell';
             const filterField = document.createElement('input');
-            if (this.fitlers[column]) {
-                filterField.value = this.fitlers[column];
+            if (this.model.fitlers[column]) {
+                filterField.value = this.model.fitlers[column];
             }
             filterField.onkeydown = (event) => {
                 if (event.key === 'Escape') {
                     filterField.value = '';
-                    this.fitlers[column] = '';
+                    this.model.fitlers[column] = '';
                     this.scheduleUpdate();
                 }
             };
             filterField.oninput = () => {
-                this.fitlers[column] = filterField.value;
+                this.model.fitlers[column] = filterField.value;
                 this.scheduleUpdate();
             };
             filterField.placeholder = 'Filter';
@@ -214,20 +211,20 @@ export class TableView {
     }
 
     private setTable(name: string) {
-        if (this.tableName === name) {
+        if (this.model.tableName === name) {
             return;
         }
 
-        this.tableName = name;
-        this.columnNames = [];
-        this.fitlers = {};
+        this.model.tableName = name;
+        this.model.columnNames = [];
+        this.model.fitlers = {};
 
         this.requestRows(true);
     }
 
     private requestRows(refetchColumns: boolean): void {
         if (refetchColumns) {
-            const sql = `PRAGMA table_info(${this.tableName});`;
+            const sql = `PRAGMA table_info(${this.model.tableName});`;
 
             this.queryRunner.runQuery(
                 { sql, parameters: [] },
@@ -235,10 +232,10 @@ export class TableView {
             );
         }
 
-        let sql = `SELECT "_rowid_",* FROM ${this.tableName}`;
+        let sql = `SELECT "_rowid_",* FROM ${this.model.tableName}`;
 
         const filterSql: string[] = [];
-        Object.entries(this.fitlers).forEach((filterEntry) => {
+        Object.entries(this.model.fitlers).forEach((filterEntry) => {
             const column = filterEntry[0];
             const filter = filterEntry[1];
 
