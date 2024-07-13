@@ -19,30 +19,30 @@ const importDbBtn = document.getElementById(
 ) as HTMLButtonElement;
 
 importDbBtn.onclick = async () => {
-    let handle: FileSystemFileHandle | undefined;
-    try {
-        [handle] = await window.showOpenFilePicker();
-    } catch {
-        return;
-    }
-    if (!handle) {
-        return;
-    }
-
-    const root = await navigator.storage.getDirectory();
-
-    const targetFile = await root.getFileHandle(handle.name, {
-        create: true,
-    });
-
-    const file = await handle.getFile();
-
-    const writable = await targetFile.createWritable();
-
-    writable.write(await file.arrayBuffer());
-
-    writable.close();
+    document.getElementById('file_input').click();
 };
+
+document
+    .getElementById('file_input')
+    .addEventListener('change', async (event) => {
+        const { files } = event.target as HTMLInputElement;
+        const file = files[0];
+        if (!file) {
+            return;
+        }
+
+        const root = await navigator.storage.getDirectory();
+
+        const targetFile = await root.getFileHandle(file.name, {
+            create: true,
+        });
+
+        const writable = await targetFile.createWritable();
+
+        writable.write(await file.arrayBuffer());
+
+        writable.close();
+    });
 
 const showViewerBtn = document.getElementById(
     'show_viewer_btn'
