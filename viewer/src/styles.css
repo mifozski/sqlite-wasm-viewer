@@ -8,7 +8,6 @@
     display: flex;
     padding: 10px;
     padding-top: 20px;
-    gap: 8px;
 }
 
 #viewer * {
@@ -34,7 +33,10 @@
 }
 
 #viewer #db_list {
-    width: 200px;
+    width: 300px;
+    min-width: 180px;
+    max-width: 750px;
+    flex: 0 0 auto;
     padding: 5px;
     background-color: darkgray;
     display: flex;
@@ -56,9 +58,12 @@
 }
 
 #viewer #right_panel {
+    width: 300px;
+    min-width: 180px;
+    max-width: 500px;
+    flex: 0 0 auto;
     padding: 5px;
     background-color: darkgray;
-    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -66,4 +71,22 @@
 
 #viewer #right_panel > div {
     height: 33.33%;
+}
+
+#viewer .resizeDragHandler {
+    width: 8px;
+    flex-shrink: 0;
+    cursor: col-resize;
+}
+
+#viewer .resizeDragHandler:hover::after {
+    border: 2px solid gray;
+    border-radius: 2px;
+    content: '';
+    display: block;
+    height: 80%;
+    margin: 0 auto;
+    position: relative;
+    top: 10%;
+    width: 0;
 }

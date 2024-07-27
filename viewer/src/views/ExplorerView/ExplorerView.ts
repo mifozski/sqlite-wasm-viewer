@@ -108,7 +108,6 @@ export class ExplorerView {
         expandArrow.onclick = () => {
             this.expandedItems[db.filename] = !this.expandedItems[db.filename];
 
-            // eslint-disable-next-line no-param-reassign
             tablesContainer.style.display = this.expandedItems[db.filename]
                 ? 'block'
                 : 'none';

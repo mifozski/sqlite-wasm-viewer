@@ -66,14 +66,12 @@
 #table_container td div {
     height: 40px;
     box-sizing: border-box;
-    display: -webkit-box;
     padding: 4px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: pre;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    line-height: 1.2em;
+    font-size: 15px;
+    line-height: 1.1em;
 }
 
 #table_container .nullValue {

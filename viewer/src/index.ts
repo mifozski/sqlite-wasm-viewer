@@ -9,6 +9,7 @@ import { DatabaseItem, ExplorerView } from './views/ExplorerView/ExplorerView';
 import { collectDbFiles } from './dbScanner';
 import { EditCellView } from './views/EditCellView/EditCellView';
 import { initState } from './viewerState';
+import { createResizeHandler } from './utils/resizeHandler';
 
 let viewer: HTMLDivElement | null = null;
 
@@ -60,6 +61,7 @@ export function showViewer(): void {
         };
         viewer.appendChild(closeBtn);
 
+        // Left Panel
         dbListEl = document.createElement('div');
         dbListEl.id = 'db_list';
 
@@ -68,6 +70,14 @@ export function showViewer(): void {
         // Middle Panel
         middlePanel = document.createElement('div');
         middlePanel.id = 'middle_panel';
+
+        const listResizeHandlerEl = createResizeHandler(
+            dbListEl,
+            middlePanel,
+            true,
+            viewer
+        );
+        viewer.appendChild(listResizeHandlerEl);
 
         const tableViewEl = document.createElement('div');
         tableViewEl.id = 'table_view';
@@ -82,6 +92,14 @@ export function showViewer(): void {
         const executeSqlView = new ExecuteSQLView(rightPanel);
 
         const editCellView = new EditCellView(viewer, rightPanel);
+
+        const rightPanelResizeHandlerEl = createResizeHandler(
+            middlePanel,
+            rightPanel,
+            false,
+            viewer
+        );
+        viewer.appendChild(rightPanelResizeHandlerEl);
 
         viewer.append(rightPanel);
 

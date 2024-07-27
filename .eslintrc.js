@@ -22,6 +22,7 @@ module.exports = {
         'no-underscore-dangle': 'off',
         'no-use-before-define': 'off',
         'no-plusplus': 'off',
+        'no-param-reassign': ['error', { props: false }],
         'prefer-destructuring': ['error', { object: true, array: false }],
         'no-useless-constructor': 'off',
         '@typescript-eslint/no-useless-constructor': 'error',
