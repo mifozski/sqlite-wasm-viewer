@@ -1,15 +1,21 @@
 #explorer_tree {
     padding: 8px;
     padding-left: 20px;
-    overflow-x: clip;
     overflow-y: auto;
     scrollbar-gutter: stable;
 }
 
+#explorer_tree .item {
+    height: 20px;
+    padding: 2px 4px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    background-color: darkgray;
+}
+
 #explorer_tree > .db {
     position: relative;
-    text-overflow: ellipsis;
-    overflow-y: clip;
 }
 
 #explorer_tree .expand {
@@ -25,15 +31,19 @@
 
 #explorer_tree .table {
     margin-left: 20px;
-    height: 20px;
     cursor: pointer;
-}
-
-#explorer_tree .table > div {
-    text-overflow: ellipsis;
-    overflow-x: hidden;
 }
 
 #explorer_tree .table.selected {
     background-color: rgb(128, 128, 128);
+}
+
+#viewer #full_label {
+    position: absolute;
+    pointer-events: none;
+    z-index: 99999;
+    border: 1px solid gray;
+    background-color: darkgray;
+    padding: 2px 4px;
+    border-radius: 2px;
 }

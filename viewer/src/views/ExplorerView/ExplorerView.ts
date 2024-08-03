@@ -24,8 +24,15 @@ export class ExplorerView {
 
     private selectedItem: SelectedTable | null = null;
 
-    constructor(rootEl: HTMLDivElement) {
+    private showFullItemLabelTimeout = 0;
+
+    private fullItemLabelEl: HTMLDivElement;
+
+    constructor(rootEl: HTMLDivElement, viewEl: HTMLDivElement) {
         this.dbs = [];
+        this.scheduleShowFullItemLabel =
+            this.scheduleShowFullItemLabel.bind(this);
+        this.hideFullItemLabel = this.hideFullItemLabel.bind(this);
 
         const dbListHeader = document.createElement('div');
         dbListHeader.className = 'viewHeader';
@@ -40,6 +47,11 @@ export class ExplorerView {
         this.expandedItems = JSON.parse(
             localStorage.getItem(EXPANDED_EXPLORER_ITEMS_KEY) ?? '{}'
         );
+
+        this.fullItemLabelEl = document.createElement('div');
+        this.fullItemLabelEl.id = 'full_label';
+        this.fullItemLabelEl.style.display = 'none';
+        viewEl.appendChild(this.fullItemLabelEl);
     }
 
     public addDatabaseItem(databaseItem: DatabaseItem): void {
@@ -68,8 +80,12 @@ export class ExplorerView {
         const dbRoot = document.createDocumentFragment();
 
         const dbItem = document.createElement('div');
+        this.setupCommonItemDom(dbItem);
+
         dbItem.innerText = db.filename;
-        dbItem.className = 'db';
+        dbItem.classList.add('db');
+        dbItem.addEventListener('mouseenter', this.scheduleShowFullItemLabel);
+        dbItem.addEventListener('mouseleave', this.hideFullItemLabel);
 
         const tablesContainer = document.createElement('div');
 
@@ -128,7 +144,9 @@ export class ExplorerView {
         db: DatabaseItem
     ) {
         const tableItem = document.createElement('div');
-        tableItem.className = 'table';
+        this.setupCommonItemDom(tableItem);
+
+        tableItem.classList.add('table');
         tableItem.onclick = () => {
             this.selectTable(tableItem, db);
         };
@@ -141,9 +159,7 @@ export class ExplorerView {
             tableItem.classList.add('selected');
         }
 
-        const tableItemInner = document.createElement('div');
-        tableItemInner.innerText = tableName;
-        tableItem.appendChild(tableItemInner);
+        tableItem.innerText = tableName;
 
         tablesContainer.appendChild(tableItem);
     }
@@ -170,6 +186,42 @@ export class ExplorerView {
                 tableName,
                 databasePath,
             });
+        }
+    }
+
+    private setupCommonItemDom(item: HTMLDivElement) {
+        item.classList.add('item');
+        item.addEventListener('mouseenter', this.scheduleShowFullItemLabel);
+        item.addEventListener('mouseleave', this.hideFullItemLabel);
+    }
+
+    private scheduleShowFullItemLabel(event: MouseEvent) {
+        const item = event.target as HTMLDivElement;
+        if (item.offsetWidth < item.scrollWidth) {
+            clearTimeout(this.showFullItemLabelTimeout);
+            this.showFullItemLabelTimeout = window.setTimeout(() => {
+                this.showFullItemLabel(item);
+            }, 300);
+        }
+    }
+
+    private hideFullItemLabel() {
+        clearTimeout(this.showFullItemLabelTimeout);
+        this.fullItemLabelEl.style.display = 'none';
+    }
+
+    private showFullItemLabel(item: HTMLDivElement) {
+        const { left, top } = item.getBoundingClientRect();
+
+        this.fullItemLabelEl.style.display = 'block';
+        this.fullItemLabelEl.style.left = `${left - 1}px`;
+        this.fullItemLabelEl.style.top = `${top - 1}px`;
+        this.fullItemLabelEl.style.backgroundColor =
+            window.getComputedStyle(item).backgroundColor;
+
+        const labelNode = item.childNodes[0];
+        if (labelNode.nodeType === Node.TEXT_NODE) {
+            this.fullItemLabelEl.innerText = labelNode.textContent || '';
         }
     }
 }

@@ -107,7 +107,7 @@ export function showViewer(): void {
             type: 'module',
         });
 
-        explorerView = new ExplorerView(dbListEl);
+        explorerView = new ExplorerView(dbListEl, viewer);
 
         const collectDbFilesPromise = collectDbFiles(config.isSqliteDatabase);
 
