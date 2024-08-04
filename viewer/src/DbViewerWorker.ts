@@ -42,7 +42,7 @@ export class DbViewerWorker {
 
                     this.dbsByPath[path] = new this.sqlite.oo1.OpfsDb(
                         path,
-                        'c'
+                        'w'
                     );
 
                     const sql = `SELECT name, sql FROM sqlite_master WHERE type='table' ORDER BY name`;

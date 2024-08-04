@@ -33,7 +33,8 @@ document
 
         const root = await navigator.storage.getDirectory();
 
-        const targetFile = await root.getFileHandle(file.name, {
+        const sanitizedFilename = file.name.trim().replaceAll(' ', '_');
+        const targetFile = await root.getFileHandle(sanitizedFilename, {
             create: true,
         });
 

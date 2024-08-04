@@ -1658,12 +1658,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sqlite.org/sqlite-wasm@npm:^3.x.x":
-  version: 3.41.2
-  resolution: "@sqlite.org/sqlite-wasm@npm:3.41.2"
+"@sqlite.org/sqlite-wasm@npm:^3.46.0-build2":
+  version: 3.46.0-build2
+  resolution: "@sqlite.org/sqlite-wasm@npm:3.46.0-build2"
   bin:
     sqlite-wasm: bin/index.js
-  checksum: 9529fa19ea2411611e440451e91a1a9a592022ae1d36d1aa4821bc0bdbff90f74aae5e123bd384c98c9b84daf0ee967541bc571673c8a7144149b3d7542975fe
+  checksum: f427cfe9b99bc9afcc84ca4afcffe0f9d31b38bd4bfd3de0153b712291d962c52ff69e3e4dbd720dc5bc3d4a0985cb7445ab282f48bdc6d24daf9457acb2b61e
   languageName: node
   linkType: hard
 
@@ -7112,7 +7112,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "sqlite-wasm-tester-app@workspace:tester-app"
   dependencies:
-    "@sqlite.org/sqlite-wasm": ^3.x.x
+    "@sqlite.org/sqlite-wasm": ^3.46.0-build2
     sqlite-wasm-viewer: "workspace:^"
   languageName: unknown
   linkType: soft
