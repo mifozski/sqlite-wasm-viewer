@@ -142,6 +142,13 @@ export class TableView {
         revertBtn.setAttribute('disabled', '');
         this.viewHeader.appendChild(revertBtn);
 
+        const dropTableBtn = document.createElement('button');
+        dropTableBtn.innerText = 'Delete table';
+        dropTableBtn.onclick = () => {
+            this.deleteTable();
+        };
+        this.viewHeader.appendChild(dropTableBtn);
+
         this.rootElement.appendChild(this.viewHeader);
 
         this.container = document.createElement('div');
@@ -185,24 +192,27 @@ export class TableView {
 
             const filterFieldCell = document.createElement('th');
             filterFieldCell.className = 'columnFilterCell';
-            const filterField = document.createElement('input');
+            const filterInput = document.createElement('input');
             if (this.model.fitlers[column]) {
-                filterField.value = this.model.fitlers[column];
+                filterInput.value = this.model.fitlers[column];
             }
-            filterField.onkeydown = (event) => {
+            filterInput.onkeydown = (event) => {
                 if (event.key === 'Escape') {
-                    filterField.value = '';
+                    filterInput.value = '';
                     this.model.fitlers[column] = '';
                     this.scheduleUpdate();
                 }
             };
-            filterField.oninput = () => {
-                this.model.fitlers[column] = filterField.value;
+            filterInput.oninput = () => {
+                this.model.fitlers[column] = filterInput.value;
                 this.scheduleUpdate();
             };
-            filterField.placeholder = 'Filter';
 
-            filterFieldCell.appendChild(filterField);
+            filterInput.onmouseover = () => {};
+
+            filterInput.placeholder = 'Filter';
+
+            filterFieldCell.appendChild(filterInput);
 
             this.headerRow.appendChild(columnHeader);
 
@@ -264,6 +274,24 @@ export class TableView {
         this.requestRows(true);
 
         ViewerState.instance.setHasChanges(false);
+    }
+
+    private deleteTable(): void {
+        if (!ViewerState.instance.selectedTable) {
+            return;
+        }
+
+        if (!ViewerState.instance.hasChanges) {
+            this.queryRunner?.runQuery({
+                sql: 'SAVEPOINT "RESTOREPOINT"',
+                parameters: [],
+            });
+        }
+
+        const sql = `DROP TABLE "${ViewerState.instance.selectedTable.tableName}";`;
+        this.queryRunner.runQuery({ sql, parameters: [] });
+
+        ViewerState.instance.setHasChanges(true);
     }
 
     private scheduleUpdate() {

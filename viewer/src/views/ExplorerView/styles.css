@@ -7,11 +7,15 @@
 
 #explorer_tree .item {
     height: 20px;
-    padding: 2px 4px;
     white-space: nowrap;
     text-overflow: ellipsis;
-    overflow-x: hidden;
     background-color: darkgray;
+}
+
+#explorer_tree .item > .label {
+    padding: 2px 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #explorer_tree > .db {
@@ -20,8 +24,13 @@
 
 #explorer_tree .expand {
     position: absolute;
-    top: 0;
-    left: -15px;
+    top: 1px;
+    left: -20px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all .1s ease-in;
 }
 

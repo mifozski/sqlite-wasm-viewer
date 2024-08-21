@@ -17,6 +17,7 @@
 #viewer .viewHeader {
     max-height: 20px;
     flex-basis: 20px;
+    flex-shrink: 0;
     line-height: 1.1rem;
     padding: 8px;
     display: flex;

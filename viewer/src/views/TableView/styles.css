@@ -54,6 +54,10 @@
     padding-top: 5px;
 }
 
+#table_container .columnFilterCell input {
+    width: calc(100% - 8px);
+}
+
 #table_container td, #table_container .columnHeaderCell {
     border: 1px solid lightgray;
 }

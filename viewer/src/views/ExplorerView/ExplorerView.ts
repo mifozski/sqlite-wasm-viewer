@@ -82,7 +82,8 @@ export class ExplorerView {
         const dbItem = document.createElement('div');
         this.setupCommonItemDom(dbItem);
 
-        dbItem.innerText = db.filename;
+        this.setupLabelDom(dbItem, db.filename);
+
         dbItem.classList.add('db');
         dbItem.addEventListener('mouseenter', this.scheduleShowFullItemLabel);
         dbItem.addEventListener('mouseleave', this.hideFullItemLabel);
@@ -114,7 +115,7 @@ export class ExplorerView {
     ) {
         const expandArrow = document.createElement('div');
         expandArrow.className = 'expand';
-        expandArrow.innerText = '>';
+        expandArrow.innerHTML = '&#9656;';
         expandArrow.style.cursor = 'pointer';
 
         if (isExpanded) {
@@ -159,7 +160,7 @@ export class ExplorerView {
             tableItem.classList.add('selected');
         }
 
-        tableItem.innerText = tableName;
+        this.setupLabelDom(tableItem, tableName);
 
         tablesContainer.appendChild(tableItem);
     }
@@ -195,9 +196,19 @@ export class ExplorerView {
         item.addEventListener('mouseleave', this.hideFullItemLabel);
     }
 
+    private setupLabelDom(item: HTMLDivElement, text: string) {
+        const label = document.createElement('div');
+        label.className = 'label';
+        label.innerText = text;
+        item.appendChild(label);
+    }
+
     private scheduleShowFullItemLabel(event: MouseEvent) {
         const item = event.target as HTMLDivElement;
-        if (item.offsetWidth < item.scrollWidth) {
+        const label = item.querySelector('.label') as
+            | HTMLDivElement
+            | undefined;
+        if (label && label.offsetWidth < label.scrollWidth) {
             clearTimeout(this.showFullItemLabelTimeout);
             this.showFullItemLabelTimeout = window.setTimeout(() => {
                 this.showFullItemLabel(item);
@@ -219,7 +230,7 @@ export class ExplorerView {
         this.fullItemLabelEl.style.backgroundColor =
             window.getComputedStyle(item).backgroundColor;
 
-        const labelNode = item.childNodes[0];
+        const labelNode = item.querySelector('.label')!.childNodes[0];
         if (labelNode.nodeType === Node.TEXT_NODE) {
             this.fullItemLabelEl.innerText = labelNode.textContent || '';
         }
