@@ -46,7 +46,7 @@ export class ListVirtualizer {
         this.container.addEventListener('scroll', this.handleScroll.bind(this));
     }
 
-    handleScroll(e: MouseEvent) {
+    private handleScroll(e: MouseEvent) {
         const { scrollTop } = e.target as HTMLElement;
 
         this.scrollTop = scrollTop;
@@ -65,7 +65,7 @@ export class ListVirtualizer {
         e.preventDefault();
     }
 
-    renderChunk(fromPos: number) {
+    private renderChunk(fromPos: number) {
         this.screenItemsLen = Math.ceil(this.height / this.itemHeight);
 
         // Cache 4 times the number of items that fit in the container viewport
@@ -115,6 +115,15 @@ export class ListVirtualizer {
     public setRowCount(rowCount: number) {
         this.totalRows = rowCount;
 
+        let first = Math.ceil(
+            this.scrollTop / this.itemHeight - this.screenItemsLen
+        );
+        first = first < 0 ? 0 : first;
+
+        this.renderChunk(first);
+    }
+
+    update() {
         let first = Math.ceil(
             this.scrollTop / this.itemHeight - this.screenItemsLen
         );

@@ -1,47 +1,43 @@
+import * as Bus from './bus';
+import { selectedTable } from './state';
 import { Database } from './types';
-import { ViewerState } from './viewerState';
 
 export interface Query {
     sql: string;
     parameters: any[];
+    errorMsg?: string;
 }
 
-type Listener = (query: Query) => void;
-
 export class QueryRunner {
-    private listeners: Listener[];
+    private db: Database;
 
-    constructor(private db: Database) {
-        this.listeners = [];
+    constructor() {
+        Bus.listen('db-connector-ready', (db) => {
+            this.db = db;
+
+            Bus.emit('query-runner-ready', true);
+        });
     }
 
     runQuery(query: Query, label?: string): void {
-        const currentDatabase = ViewerState.instance.selectedTable;
-        if (!currentDatabase) {
+        if (!this.db) {
+            return;
+        }
+
+        const currentTable = selectedTable();
+        if (!currentTable) {
             return;
         }
 
         this.db.post({
             type: 'query',
             query,
-            databasePath: currentDatabase.databasePath,
+            databasePath: currentTable.databasePath,
             label,
         });
 
-        this.listeners.forEach((listener) => {
-            listener(query);
-        });
-    }
-
-    addListener(listener: Listener): () => void {
-        if (this.listeners.indexOf(listener) !== -1) {
-            throw new Error('Listener is already added');
-        }
-
-        this.listeners.push(listener);
-
-        return () => {
-            this.listeners.splice(this.listeners.indexOf(listener), 1);
-        };
+        Bus.emit('query-run', query);
     }
 }
+
+export const queryRunner = new QueryRunner();

@@ -27,6 +27,11 @@ export type DbWorkerOutput =
               updates?: { changes: any[]; lastInsertRowid: number };
           };
           label?: string;
+      }
+    | {
+          readonly type: 'error';
+          readonly errorMsg: string;
+          readonly sql: string;
       };
 
 export type Database = {
@@ -44,12 +49,4 @@ export interface CurrentCell {
 export interface CurrentTable {
     tableName: string;
     databasePath: string;
-}
-
-declare global {
-    interface HTMLElementEventMap {
-        cellSelected: CustomEvent<CurrentCell> & Event;
-        tableSelected: CustomEvent<CurrentTable>;
-        dbHasChanges: CustomEvent<boolean>;
-    }
 }

@@ -7,5 +7,5 @@ export class TableViewModel {
 
     public fitlers: { [column: string]: string } = {};
 
-    public selectedCell: HTMLTableCellElement | null = null;
+    public selectedCell: HTMLElement | null = null;
 }

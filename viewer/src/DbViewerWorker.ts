@@ -77,7 +77,6 @@ export class DbViewerWorker {
                         }
 
                         while (rawStatement.step()) {
-                            // Kysely expects the results to be in the object mode
                             const row = rawStatement.get({});
                             resultRows.push(row);
                         }

@@ -1,4 +1,5 @@
-import { ViewerState } from '../../viewerState';
+import * as Bus from '../../bus';
+import { selectTable } from '../../state';
 
 import './styles.css';
 
@@ -29,6 +30,10 @@ export class ExplorerView {
     private fullItemLabelEl: HTMLDivElement;
 
     constructor(rootEl: HTMLDivElement, viewEl: HTMLDivElement) {
+        Bus.listen('db-found', (table) => {
+            this.addDatabaseItem(table);
+        });
+
         this.dbs = [];
         this.scheduleShowFullItemLabel =
             this.scheduleShowFullItemLabel.bind(this);
@@ -183,7 +188,7 @@ export class ExplorerView {
 
             const databasePath = databaseItem.filename;
 
-            ViewerState.instance.setSelectedTable({
+            selectTable({
                 tableName,
                 databasePath,
             });
@@ -234,5 +239,18 @@ export class ExplorerView {
         if (labelNode.nodeType === Node.TEXT_NODE) {
             this.fullItemLabelEl.innerText = labelNode.textContent || '';
         }
+    }
+}
+
+let _explorerView: ExplorerView | undefined;
+
+export function createExplorerView(
+    rootEl: HTMLDivElement,
+    viewEl: HTMLDivElement
+) {
+    if (!_explorerView) {
+        _explorerView = new ExplorerView(rootEl, viewEl);
+    } else {
+        console.warn('ExplorerView is already created');
     }
 }

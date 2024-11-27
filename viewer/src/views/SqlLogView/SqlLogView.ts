@@ -1,11 +1,18 @@
-import { Query, QueryRunner } from 'src/QueryRunner';
+import { Query } from 'src/QueryRunner';
+import * as Bus from '../../bus';
 import './styles.css';
 
 class SqlLogView {
     textArea: HTMLTextAreaElement;
 
-    constructor(rootEl: HTMLDivElement, queryRunner: QueryRunner) {
-        queryRunner.addListener(this.handleQueryRun.bind(this));
+    constructor(rootEl: HTMLDivElement) {
+        Bus.listen('query-run', (query) => {
+            if (query.errorMsg) {
+                this.textArea.value += `Error while running previous query: ${query.errorMsg}\n`;
+            } else {
+                this.textArea.value += `${query.sql}\n`;
+            }
+        });
 
         const container = document.createElement('div');
         container.id = 'sql_log_container';
@@ -37,9 +44,6 @@ class SqlLogView {
     }
 }
 
-export function initSqlLogView(
-    rootEl: HTMLDivElement,
-    queryRunner: QueryRunner
-) {
-    return new SqlLogView(rootEl, queryRunner);
+export function createSqlLogView(rootEl: HTMLDivElement) {
+    return new SqlLogView(rootEl);
 }

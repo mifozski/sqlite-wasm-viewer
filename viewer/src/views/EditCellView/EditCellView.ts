@@ -1,24 +1,19 @@
+import * as Bus from '../../bus';
+import { queryRunner } from '../../QueryRunner';
+import { isDirty, setDirty } from '../../state';
 import { CurrentCell } from '../../types';
-import { QueryRunner } from '../../QueryRunner';
-import { ViewerState } from '../../viewerState';
 
 import './styles.css';
 
 export class EditCellView {
-    queryRunner: QueryRunner | undefined;
-
     textArea: HTMLTextAreaElement;
 
     currentCell: CurrentCell | undefined;
 
-    constructor(
-        private viewerElem: HTMLElement,
-        private rootEl: HTMLDivElement
-    ) {
+    constructor(private rootEl: HTMLDivElement) {
         this.buildDom();
 
-        viewerElem.addEventListener('cellSelected', (event) => {
-            const { detail: cell } = event;
+        Bus.listen('cell-selected', (cell) => {
             this.currentCell = cell;
             this.textArea.value = cell.value;
             this.textArea.select();
@@ -48,22 +43,28 @@ export class EditCellView {
 
     private handleApplyEdit() {
         if (this.textArea.value) {
-            if (!ViewerState.instance.hasChanges) {
-                this.queryRunner?.runQuery({
+            if (!isDirty()) {
+                queryRunner.runQuery({
                     sql: 'SAVEPOINT "RESTOREPOINT"',
                     parameters: [],
                 });
             }
-            this.queryRunner?.runQuery({
+            queryRunner.runQuery({
                 sql: `UPDATE ${this.currentCell?.tableName} SET "${this.currentCell?.columnName}"=? WHERE "_rowid_"='${this.currentCell?.cellRowId}'`,
                 parameters: [this.textArea.value],
             });
+            if (this.currentCell) {
+                Bus.emit('cell-edited', {
+                    cell: this.currentCell,
+                    value: this.textArea.value,
+                });
+            }
 
-            ViewerState.instance.setHasChanges(true);
+            setDirty(true);
         }
     }
+}
 
-    setDb(queryRunner: QueryRunner) {
-        this.queryRunner = queryRunner;
-    }
+export function createEditCellView(rootEl: HTMLDivElement) {
+    return new EditCellView(rootEl);
 }

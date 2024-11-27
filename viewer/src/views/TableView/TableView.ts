@@ -1,8 +1,9 @@
-import { ViewerState } from '../../viewerState';
+import { isDirty, selectCell, selectedTable, setDirty } from '../../state';
+import * as Bus from '../../bus';
 import { ListVirtualizer } from '../../ListVirtualizer';
-import { QueryRunner } from '../../QueryRunner';
-import './styles.css';
+import { queryRunner } from '../../QueryRunner';
 import { TableViewModel } from './TableViewModel';
+import './styles.css';
 
 export class TableView {
     private container: HTMLDivElement;
@@ -21,18 +22,29 @@ export class TableView {
 
     private model: TableViewModel;
 
-    constructor(
-        private viewerElem: HTMLElement,
-        private rootElement: HTMLDivElement,
-        private queryRunner: QueryRunner
-    ) {
+    constructor(private rootElement: HTMLDivElement) {
         this.buildDomTemplate();
 
         this.model = new TableViewModel();
 
-        this.viewerElem.addEventListener('tableSelected', (event) => {
-            const { detail: selectedTable } = event;
-            this.setTable(selectedTable.tableName);
+        Bus.listen('table-selected', (table) => {
+            this.setTable(table.tableName);
+        });
+
+        Bus.listen('query-results', (data) => {
+            if (data?.label === 'tableViewColumns') {
+                this.setTableColumns(data.result.resultRows || []);
+            } else if (data?.label === 'tableView') {
+                this.setTableResults(data.result.resultRows || []);
+            }
+        });
+
+        Bus.listen('cell-edited', ({ cell, value }) => {
+            const row = this.model.rows.find((r) => r.rowid === cell.cellRowId);
+            if (row) {
+                row[cell.columnName] = value;
+                this.virtualizer.update();
+            }
         });
 
         this.virtualizer = new ListVirtualizer({
@@ -51,7 +63,29 @@ export class TableView {
 
                 const tr = document.createElement('tr');
 
-                const rowId = row.rowid ?? (i + 1).toString();
+                const rowId = row.rowid;
+
+                tr.onclick = (event) => {
+                    const element = (event.target as HTMLElement | null)
+                        ?.parentElement;
+                    if (element?.id) {
+                        const value = row[element.id];
+
+                        selectCell({
+                            value,
+                            cellRowId: rowId,
+                            columnName: element.id,
+                            tableName: selectedTable()?.tableName || '',
+                        });
+                        if (this.model.selectedCell) {
+                            this.model.selectedCell.classList.remove(
+                                'selected'
+                            );
+                        }
+                        element.classList.add('selected');
+                        this.model.selectedCell = element;
+                    }
+                };
 
                 Object.keys(row).forEach((columnKey) => {
                     if (columnKey === 'rowid') {
@@ -60,6 +94,7 @@ export class TableView {
 
                     const value = row[columnKey];
                     const td = document.createElement('td');
+                    td.id = columnKey;
                     const contentEl = document.createElement('div');
                     if (value !== null) {
                         contentEl.innerHTML = value;
@@ -67,26 +102,6 @@ export class TableView {
                         contentEl.innerHTML = 'NULL';
                         contentEl.className = 'nullValue';
                     }
-
-                    td.onclick = () => {
-                        ViewerState.instance.setSelectedCell({
-                            value,
-                            cellRowId: rowId,
-                            columnName: columnKey,
-                            tableName:
-                                ViewerState.instance.selectedTable?.tableName ||
-                                '',
-                        });
-
-                        if (this.model.selectedCell) {
-                            this.model.selectedCell.classList.remove(
-                                'selected'
-                            );
-                        }
-
-                        td.classList.add('selected');
-                        this.model.selectedCell = td;
-                    };
 
                     td.appendChild(contentEl);
                     tr.appendChild(td);
@@ -165,10 +180,8 @@ export class TableView {
 
         this.rootElement.appendChild(this.container);
 
-        this.viewerElem.addEventListener('dbHasChanges', (event) => {
-            const { detail: hasChanges } = event;
-
-            if (hasChanges) {
+        Bus.listen('db-dirtied', (dirty) => {
+            if (dirty) {
                 saveBtn.removeAttribute('disabled');
                 revertBtn.removeAttribute('disabled');
             } else {
@@ -236,13 +249,10 @@ export class TableView {
         if (refetchColumns) {
             const sql = `PRAGMA table_info(${this.model.tableName});`;
 
-            this.queryRunner.runQuery(
-                { sql, parameters: [] },
-                'tableViewColumns'
-            );
+            queryRunner.runQuery({ sql, parameters: [] }, 'tableViewColumns');
         }
 
-        let sql = `SELECT "_rowid_",* FROM ${this.model.tableName}`;
+        let sql = `SELECT "_rowid_" as rowid,* FROM ${this.model.tableName}`;
 
         const filterSql: string[] = [];
         Object.entries(this.model.fitlers).forEach((filterEntry) => {
@@ -258,40 +268,41 @@ export class TableView {
             sql += ` WHERE ${filterSql.join(' AND ')} ESCAPE '\\'`;
         }
 
-        this.queryRunner.runQuery({ sql, parameters: [] }, 'tableView');
+        queryRunner.runQuery({ sql, parameters: [] }, 'tableView');
     }
 
     private saveChanges(): void {
         const sql = 'RELEASE "RESTOREPOINT";';
-        this.queryRunner.runQuery({ sql, parameters: [] });
-        ViewerState.instance.setHasChanges(false);
+        queryRunner.runQuery({ sql, parameters: [] });
+        setDirty(false);
     }
 
     private revertChanges(): void {
         const sql = 'ROLLBACK TO SAVEPOINT "RESTOREPOINT";';
-        this.queryRunner.runQuery({ sql, parameters: [] });
+        queryRunner.runQuery({ sql, parameters: [] });
 
         this.requestRows(true);
 
-        ViewerState.instance.setHasChanges(false);
+        setDirty(false);
     }
 
     private deleteTable(): void {
-        if (!ViewerState.instance.selectedTable) {
+        const table = selectedTable();
+        if (!table) {
             return;
         }
 
-        if (!ViewerState.instance.hasChanges) {
-            this.queryRunner?.runQuery({
+        if (!isDirty()) {
+            queryRunner?.runQuery({
                 sql: 'SAVEPOINT "RESTOREPOINT"',
                 parameters: [],
             });
         }
 
-        const sql = `DROP TABLE "${ViewerState.instance.selectedTable.tableName}";`;
-        this.queryRunner.runQuery({ sql, parameters: [] });
+        const sql = `DROP TABLE "${table.tableName}";`;
+        queryRunner.runQuery({ sql, parameters: [] });
 
-        ViewerState.instance.setHasChanges(true);
+        setDirty(true);
     }
 
     private scheduleUpdate() {
@@ -302,5 +313,15 @@ export class TableView {
             this.requestRows(false);
             this.updateTimer = null;
         }, 300);
+    }
+}
+
+let _tableView: TableView | undefined;
+
+export function createTableView(rootEl: HTMLDivElement) {
+    if (!_tableView) {
+        _tableView = new TableView(rootEl);
+    } else {
+        console.warn('TableView is already created');
     }
 }

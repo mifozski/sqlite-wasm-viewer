@@ -1,10 +1,8 @@
+import { queryRunner } from '../../QueryRunner';
+
 import './styles.css';
 
-import { QueryRunner } from 'src/QueryRunner';
-
-export class ExecuteSQLView {
-    queryRunner: QueryRunner | undefined;
-
+class ExecuteSQLView {
     textArea: HTMLTextAreaElement;
 
     highlighting: HTMLElement;
@@ -36,14 +34,14 @@ export class ExecuteSQLView {
 
     private handleExecuteSql() {
         if (this.textArea.value) {
-            this.queryRunner?.runQuery({
+            queryRunner.runQuery({
                 sql: this.textArea.value,
                 parameters: [],
             });
         }
     }
+}
 
-    setDb(queryRunner: QueryRunner) {
-        this.queryRunner = queryRunner;
-    }
+export function createSQLExecutorView(rootEl: HTMLDivElement) {
+    return new ExecuteSQLView(rootEl);
 }
