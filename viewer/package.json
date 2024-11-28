@@ -1,6 +1,6 @@
 {
   "name": "sqlite-wasm-viewer",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "An SQLite OPFS database viewer that enables database inspection and SQL command execution.",
   "main": "dist/index.js",
   "scripts": {
