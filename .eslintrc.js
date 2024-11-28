@@ -18,6 +18,7 @@ module.exports = {
         'import/prefer-default-export': 'off',
         'import/no-unresolved': 'off',
         'import/extensions': 'off',
+        'no-multi-assign': 'off',
         '@typescript-eslint/ban-ts-comment': 'off',
         'no-underscore-dangle': 'off',
         'no-use-before-define': 'off',
