@@ -26,7 +26,7 @@ export class Viewer {
         this._container = document.createElement('div');
         this._container.id = 'viewer';
 
-        const closeBtn = document.createElement('div');
+        const closeBtn = document.createElement('button');
         closeBtn.id = 'close_btn';
         closeBtn.innerText = 'Close';
         closeBtn.onclick = () => {

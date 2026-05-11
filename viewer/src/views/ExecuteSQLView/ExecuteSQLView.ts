@@ -26,6 +26,7 @@ class ExecuteSQLView {
 
         const executeBtn = document.createElement('button');
         executeBtn.innerText = 'Execute SQL';
+        executeBtn.classList.add('panelActionBtn');
         executeBtn.onclick = this.handleExecuteSql.bind(this);
         container.appendChild(executeBtn);
 

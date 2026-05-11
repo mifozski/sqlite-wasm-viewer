@@ -1,5 +1,5 @@
 #table_view {
-    padding: 5px;
+    padding: 0;
     flex: 1;
     position: relative;
     overflow: hidden;
@@ -8,77 +8,101 @@
 }
 
 #table_view_header {
-    max-height: 20px;
-    flex-basis: 20px;
+    max-height: 34px;
+    flex-basis: 34px;
     left: 0;
     right: 0;
     position: sticky;
     line-height: 1.1rem;
-    padding: 8px;
-    background-color: lightgray;
+    padding: 8px 10px;
+    background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
 }
 
 #table_view_header_title {
-    padding: 8px;
+    padding-right: 8px;
 }
 
 #table_container {
-    overflow-y: scroll;
-    display: flex;
+    overflow: auto;
+    flex: 1;
+    background: #fff;
 }
 
 #table_container table {
-    flex: 1;
     table-layout: fixed;
     width: 100%;
-    background-color: whitesmoke;
+    background: #fff;
     border-collapse: collapse;
     border-spacing: 0;
 }
 
 #table_container tbody {
-    flex: 1;
-    overflow-y: scroll;
     position: relative;
 }
 
 #table_container .columnHeaderCell {
-    height: 60px;
+    height: 62px;
     position: sticky;
     top: 0;
-    background-color: darkgray;
+    padding: 6px;
+    background: #f8fafc;
     z-index: 2;
+    color: #334155;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 #table_container .columnFilterCell {
-    padding-top: 5px;
+    padding-top: 6px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 #table_container .columnFilterCell input {
-    width: calc(100% - 8px);
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 12px;
 }
 
 #table_container td, #table_container .columnHeaderCell {
-    border: 1px solid lightgray;
+    border: 1px solid #e2e8f0;
 }
 
 #table_container td.selected {
-    background-color: lightslategray;
-    color: white;
+    background: #2563eb;
+    color: #fff;
 }
 
 #table_container td div {
     height: 40px;
     box-sizing: border-box;
-    padding: 4px;
+    padding: 10px 8px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: pre;
-    font-size: 15px;
-    line-height: 1.1em;
+    font-size: 13px;
+    line-height: 1.2em;
+}
+
+#table_container tbody tr:nth-child(even) td:not(.selected) {
+    background: #fcfdff;
+}
+
+#table_container tbody tr:hover td:not(.selected) {
+    background: #eff6ff;
+}
+
+#table_container tbody tr:hover td.selected {
+    background: #2563eb;
 }
 
 #table_container .nullValue {
     font-style: italic;
-    color: gray;
+    color: #64748b;
+}
+
+::placeholder {
+    color: #959595; /* Use any color format (HEX, RGB, Name) */
+    opacity: 1;    /* Required for Firefox to show full color */
 }

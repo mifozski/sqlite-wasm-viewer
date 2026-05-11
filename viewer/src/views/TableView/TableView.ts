@@ -322,6 +322,6 @@ export function createTableView(rootEl: HTMLDivElement) {
     if (!_tableView) {
         _tableView = new TableView(rootEl);
     } else {
-        console.warn('TableView is already created');
+        // console.warn('TableView is already created');
     }
 }

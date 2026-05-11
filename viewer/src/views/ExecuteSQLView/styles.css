@@ -1,47 +1,51 @@
 #execute_sql_container {
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 #execute_sql_editor {
     position: relative;
-    background-color: white;
-    height: 300px;
+    background-color: #fff;
+    height: 100%;
 }
 
 #execute_sql_textarea, #execute_sql_highlighting {
     resize: none;
-    height: 300px;
-    background-color: white;
+    height: 100%;
+    min-height: 150px;
+    background: #f8fafc;
     overflow: auto;
     white-space: nowrap;
-    font-size: 10pt;
-    font-family: monospace;
-    line-height: 1.5;
+    font-size: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    line-height: 1.45;
     tab-size: 2;
-    caret-color: black;
+    caret-color: #111827;
+    color: #0f172a;
 }
 
 #execute_sql_highlighting {
     z-index: 0;
     margin: 0;
-    padding: 2px;
+    padding: 8px;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 0;
 }
 
 .highlighting {
-    color: blue;
+    color: #2563eb;
 }
 
 .sql-hl-keyword {
-    color: purple;
-    /* font-weight: 600; */
+    color: #7c3aed;
 }
 
 .sql-hl-special {
-    color: black;
+    color: #0f172a;
 }
 
 .sql-hl-string {
-    color: red;
-    /* font-weight: 600; */
+    color: #dc2626;
 }

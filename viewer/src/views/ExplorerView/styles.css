@@ -1,19 +1,21 @@
 #explorer_tree {
-    padding: 8px;
-    padding-left: 20px;
+    padding: 8px 8px 8px 20px;
     overflow-y: auto;
     scrollbar-gutter: stable;
+    background: #fff;
 }
 
 #explorer_tree .item {
-    height: 20px;
+    height: 26px;
     white-space: nowrap;
     text-overflow: ellipsis;
-    background-color: darkgray;
+    background: transparent;
+    border-radius: 6px;
+    color: #334155;
 }
 
 #explorer_tree .item > .label {
-    padding: 2px 4px;
+    padding: 4px 8px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -24,14 +26,15 @@
 
 #explorer_tree .expand {
     position: absolute;
-    top: 1px;
+    top: 3px;
     left: -20px;
     width: 20px;
     height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all .1s ease-in;
+    color: #64748b;
+    transition: all 0.12s ease-in;
 }
 
 #explorer_tree .expanded {
@@ -43,16 +46,25 @@
     cursor: pointer;
 }
 
+#explorer_tree .table:hover,
+#explorer_tree .db:hover {
+    background: #f1f5f9;
+}
+
 #explorer_tree .table.selected {
-    background-color: rgb(128, 128, 128);
+    background: #e2e8f0;
+    color: #0f172a;
+    font-weight: 600;
 }
 
 #viewer #full_label {
     position: absolute;
     pointer-events: none;
     z-index: 99999;
-    border: 1px solid gray;
-    background-color: darkgray;
-    padding: 2px 4px;
-    border-radius: 2px;
+    border: 1px solid #cbd5e1;
+    background-color: #fff;
+    color: #0f172a;
+    padding: 4px 8px;
+    border-radius: 6px;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.16);
 }

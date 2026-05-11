@@ -14,9 +14,14 @@ export class EditCellView {
         this.buildDom();
 
         Bus.listen('cell-selected', (cell) => {
-            this.currentCell = cell;
-            this.textArea.value = cell.value;
-            this.textArea.select();
+            if (cell) {
+                this.textArea.value = cell.value;
+                this.textArea.select();
+                this.textArea.placeholder = '';
+            } else {
+                this.textArea.value = '';
+                this.textArea.placeholder = 'Select cell to edit...';
+            }
         });
     }
 
@@ -30,11 +35,13 @@ export class EditCellView {
         container.appendChild(header);
 
         this.textArea = document.createElement('textarea');
+        this.textArea.placeholder = 'Select cell to edit...';
         this.textArea.id = 'execute_sql_textarea';
         container.appendChild(this.textArea);
 
         const executeBtn = document.createElement('button');
         executeBtn.innerText = 'Apply';
+        executeBtn.classList.add('panelActionBtn');
         executeBtn.onclick = this.handleApplyEdit.bind(this);
         container.appendChild(executeBtn);
 

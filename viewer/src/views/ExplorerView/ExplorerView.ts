@@ -251,6 +251,6 @@ export function createExplorerView(
     if (!_explorerView) {
         _explorerView = new ExplorerView(rootEl, viewEl);
     } else {
-        console.warn('ExplorerView is already created');
+        // console.warn('ExplorerView is already created');
     }
 }

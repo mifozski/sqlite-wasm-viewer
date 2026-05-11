@@ -19,17 +19,25 @@ export function selectedTable() {
     return _state.selectedTable;
 }
 
+export function selectedCell() {
+    return _state.selectedCell;
+}
+
 export function isDirty() {
     return _state.dirty;
 }
 
-export function selectCell(cell: CurrentCell) {
+export function selectCell(cell: CurrentCell | null) {
     _state.selectedCell = cell;
 
     Bus.emit('cell-selected', cell);
 }
 
 export function selectTable(table: CurrentTable) {
+    const hasChanged = _state.selectedTable?.tableName !== table.tableName;
+    if (hasChanged) {
+        selectCell(null);
+    }
     _state.selectedTable = table;
 
     Bus.emit('table-selected', table);

@@ -3,7 +3,7 @@ import { CurrentCell, CurrentTable, Database } from './types';
 import { DatabaseItem } from './views/ExplorerView/ExplorerView';
 
 type BusEventMap = {
-    'cell-selected': CurrentCell;
+    'cell-selected': CurrentCell | null;
     'table-selected': CurrentTable;
     'db-dirtied': boolean;
     'db-found': DatabaseItem;
