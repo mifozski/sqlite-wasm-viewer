@@ -1,8 +1,12 @@
 {
   "name": "sqlite-wasm-viewer",
   "version": "1.1.1",
-  "description": "An SQLite OPFS database viewer that enables database inspection and SQL command execution.",
+  "description": "Browser SQLite OPFS viewer for @sqlite.org/sqlite-wasm: inspect OPFS-backed databases, run SQL, and filter tables.",
   "main": "dist/index.js",
+  "homepage": "https://github.com/mifozski/sqlite-wasm-viewer#readme",
+  "bugs": {
+    "url": "https://github.com/mifozski/sqlite-wasm-viewer/issues"
+  },
   "scripts": {
     "build": "yarn build-transpile && yarn build-copy-css",
     "build-transpile": "babel src --extensions .ts --out-dir=dist --presets=@babel/env,@babel/typescript",
@@ -11,10 +15,16 @@
   },
   "keywords": [
     "sqlite",
+    "sqlite-wasm",
     "opfs",
+    "opfs-viewer",
     "wasm",
+    "viewer",
+    "browser",
     "sql",
-    "database"
+    "database",
+    "inspector",
+    "sqlite-wasm-viewer"
   ],
   "author": {
     "name": "Andrey Efimov",

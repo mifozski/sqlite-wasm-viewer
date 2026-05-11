@@ -10,8 +10,10 @@ module.exports = [
         target: 'web',
         entry: './tester-app/src/index.ts',
         output: {
-            path: path.join(__dirname, 'dist'),
+            path: path.join(__dirname, '..', 'tester-app', 'dist'),
             filename: 'index.js',
+            publicPath: '/demo/',
+            clean: true,
         },
         module: {
             rules: [
@@ -38,7 +40,7 @@ module.exports = [
                 }),
             ],
         },
-        mode: 'development',
+        mode: 'production',
         node: {
             __dirname: false,
         },
@@ -47,25 +49,5 @@ module.exports = [
                 template: './tester-app/src/index.html',
             }),
         ],
-        devServer: {
-            static: {
-                directory: path.join(__dirname, 'public'),
-            },
-            compress: true,
-            port: 9000,
-            historyApiFallback: {
-                index: './tester-app/src/index.html',
-            },
-            headers: [
-                {
-                    key: 'Cross-Origin-Embedder-Policy',
-                    value: 'require-corp',
-                },
-                {
-                    key: 'Cross-Origin-Opener-Policy',
-                    value: 'same-origin',
-                },
-            ],
-        },
     },
 ];

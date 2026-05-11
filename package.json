@@ -5,6 +5,7 @@
     "start-demo": "webpack serve --host mysticeggs.xyz --https --config webpack/webpack.dev.js",
     "build": "cd viewer && yarn build",
     "build-tester-app": "webpack --config webpack/webpack.prod.js",
+    "deploy-demo": "bash scripts/deploy-demo.sh",
     "publish": "yarn lint && cd viewer && yarn publish",
     "lint": "eslint . && yarn ts",
     "ts": "yarn tsc --build viewer/tsconfig.json"

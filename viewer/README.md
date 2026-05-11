@@ -4,6 +4,8 @@ A simple web-based SQLite browser that lets you inspect SQLite databases created
 
 ![Viewer](screenshot.png)
 
+Demo: https://sqlite-wasm-viewer.mysticeggs.xyz/demo/
+
 # Installation
 ```
 npm install --save sqlite-wasm-viewer
