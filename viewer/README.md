@@ -2,7 +2,7 @@
 
 A simple web-based SQLite browser that lets you inspect SQLite databases created by the [SQLite Wasm module](https://github.com/sqlite/sqlite-wasm) and stored in OPFS storage. It also supports running queries and filtering tables.
 
-![Viewer](screenshot.png)
+![Viewer](../screenshot.png)
 
 Demo: https://sqlite-wasm-viewer.mysticeggs.xyz/
 
