@@ -109,13 +109,26 @@ const sampleProgressWrap = document.getElementById(
 ) as HTMLElement;
 const sampleProgress = document.getElementById(
     'sample_db_progress'
-) as HTMLProgressElement;
+) as HTMLElement;
+const sampleBar = document.getElementById('sample_db_bar') as HTMLElement;
 const sampleStatus = document.getElementById('sample_db_status') as HTMLElement;
+
+function setSampleProgress(percent: number | null): void {
+    if (percent === null) {
+        sampleProgress.removeAttribute('aria-valuenow');
+        sampleBar.style.width = '0';
+        return;
+    }
+
+    const clamped = Math.max(0, Math.min(100, percent));
+    sampleProgress.setAttribute('aria-valuenow', String(Math.round(clamped)));
+    sampleBar.style.width = `${clamped}%`;
+}
 
 loadSampleDbBtn.onclick = async () => {
     loadSampleDbBtn.disabled = true;
     sampleProgressWrap.hidden = false;
-    sampleProgress.removeAttribute('value');
+    setSampleProgress(null);
     sampleStatus.textContent = 'Downloading…';
 
     try {
@@ -129,18 +142,15 @@ loadSampleDbBtn.onclick = async () => {
                     return;
                 }
 
-                sampleProgress.max = total;
-                sampleProgress.value = loaded;
-                sampleStatus.textContent = `${Math.round(
-                    (loaded / total) * 100
-                )}%`;
+                const percent = (loaded / total) * 100;
+                setSampleProgress(percent);
+                sampleStatus.textContent = `${Math.round(percent)}%`;
             }
         );
 
         sampleStatus.textContent = 'Saving…';
         await saveDatabaseToOpfs('chinook.sqlite', data);
-        sampleProgress.max = 100;
-        sampleProgress.value = 100;
+        setSampleProgress(100);
         sampleStatus.textContent = 'Saved';
     } catch (error) {
         sampleStatus.textContent = 'Download failed';

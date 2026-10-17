@@ -4,36 +4,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viewer App</title>
-    <style type="text/css">
+    <title>SQLite Wasm Viewer</title>
+    <style>
+        html,
         body {
-            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            box-sizing: border-box;
+            color: #111827;
+            background: linear-gradient(180deg, #f4f7fb 0%, #edf2f8 100%);
+            font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        main {
+            width: min(440px, 100%);
+            padding: 28px 24px 22px;
+            background: #fff;
+            border: 1px solid #dbe2ea;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        p {
+            margin: 0 0 20px;
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .actions .or {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        button {
+            font: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            color: #1e293b;
+            cursor: pointer;
+        }
+
+        button:hover:not(:disabled) {
+            border-color: #94a3b8;
+            background: #f8fafc;
+        }
+
+        button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        button.primary {
+            color: #fff;
+            background: #2563eb;
+            border-color: #1d4ed8;
+        }
+
+        button.primary:hover:not(:disabled) {
+            background: #1d4ed8;
         }
 
         #sample_db_progress_wrap {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 8px;
-            margin: 0 8px;
-            font-size: 14px;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        #sample_db_progress_wrap[hidden] {
+            display: none;
         }
 
         #sample_db_progress {
-            width: 140px;
-            height: 14px;
+            flex: 1;
+            height: 8px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: #e2e8f0;
+        }
+
+        #sample_db_progress > span {
+            display: block;
+            height: 100%;
+            width: 0;
+            border-radius: inherit;
+            background: #2563eb;
+        }
+
+        #sample_db_status {
+            min-width: 7.5em;
+            color: #334155;
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        #show_viewer_btn {
+            margin-left: auto;
         }
     </style>
 </head>
 
 <body>
-    <input type="file" id="file_input" style="display: none;" />
-    <button id="import_db_btn">Import db</button>
-    <button id="load_sample_db_btn">Load sample db</button>
-    <span id="sample_db_progress_wrap" hidden>
-        <progress id="sample_db_progress" max="100"></progress>
-        <span id="sample_db_status"></span>
-    </span>
-    <button id="show_viewer_btn">Show Viewer</button>
+    <main>
+        <h1>SQLite Wasm Viewer</h1>
+        <p>Inspect SQLite databases stored in this browser. Import a file, or load the SQLite sample database.</p>
+        <div class="actions">
+            <input type="file" id="file_input" hidden />
+            <button id="import_db_btn" type="button">Import db</button>
+            <span class="or">or</span>
+            <button id="load_sample_db_btn" type="button">Load sample db</button>
+            <button id="show_viewer_btn" class="primary" type="button">Show Viewer</button>
+        </div>
+        <div id="sample_db_progress_wrap" hidden>
+            <div id="sample_db_progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                <span id="sample_db_bar"></span>
+            </div>
+            <span id="sample_db_status"></span>
+        </div>
+    </main>
 </body>
 
 </html>
