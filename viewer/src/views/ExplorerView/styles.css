@@ -5,6 +5,11 @@
     background: #fff;
 }
 
+#explorer_tree .status {
+    color: #64748b;
+    padding: 4px 0;
+}
+
 #explorer_tree .item {
     height: 26px;
     white-space: nowrap;

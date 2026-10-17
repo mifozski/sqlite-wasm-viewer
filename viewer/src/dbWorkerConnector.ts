@@ -23,20 +23,29 @@ export function connectToWorker(config: Config) {
             };
             Bus.emit('db-connector-ready', db);
 
-            collectDbFilesPromise.then((dbFiles) => {
-                dbFiles.forEach((dbFile) => {
-                    const dbFilepath = dbFile;
-                    const dbName = dbFile;
-                    dbs[dbFilepath] = {
-                        filename: dbName,
-                        tables: [],
-                    };
-                    worker.postMessage({
-                        type: 'readSchema',
-                        path: dbFile,
+            collectDbFilesPromise
+                .then((dbFiles) => {
+                    if (dbFiles.length === 0) {
+                        Bus.emit('db-scan-finished', { count: 0 });
+                        return;
+                    }
+
+                    dbFiles.forEach((dbFile) => {
+                        const dbFilepath = dbFile;
+                        const dbName = dbFile;
+                        dbs[dbFilepath] = {
+                            filename: dbName,
+                            tables: [],
+                        };
+                        worker.postMessage({
+                            type: 'readSchema',
+                            path: dbFile,
+                        });
                     });
+                })
+                .catch(() => {
+                    Bus.emit('db-scan-finished', { count: 0 });
                 });
-            });
         } else if (message.data.type === 'onSchema') {
             const tables = message.data.schema.map((tableSchema) => {
                 return tableSchema[0];

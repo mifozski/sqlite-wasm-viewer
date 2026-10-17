@@ -28,6 +28,13 @@ module.exports = [
                     test: /\.css$/i,
                     use: ['style-loader', 'css-loader'],
                 },
+                {
+                    test: /\.sqlite$/,
+                    type: 'asset/resource',
+                    generator: {
+                        filename: '[name][ext]',
+                    },
+                },
             ],
         },
         resolve: {

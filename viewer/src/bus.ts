@@ -7,6 +7,7 @@ type BusEventMap = {
     'table-selected': CurrentTable;
     'db-dirtied': boolean;
     'db-found': DatabaseItem;
+    'db-scan-finished': { count: number };
     'query-results':
         | {
               result: {

@@ -29,9 +29,17 @@ export class ExplorerView {
 
     private fullItemLabelEl: HTMLDivElement;
 
+    private statusEl: HTMLDivElement;
+
     constructor(rootEl: HTMLDivElement, viewEl: HTMLDivElement) {
         Bus.listen('db-found', (table) => {
             this.addDatabaseItem(table);
+        });
+
+        Bus.listen('db-scan-finished', ({ count }) => {
+            if (count === 0) {
+                this.statusEl.innerText = 'No databases found';
+            }
         });
 
         this.dbs = [];
@@ -49,6 +57,11 @@ export class ExplorerView {
         this.containerEl.id = 'explorer_tree';
         rootEl.appendChild(this.containerEl);
 
+        this.statusEl = document.createElement('div');
+        this.statusEl.className = 'status';
+        this.statusEl.innerText = 'Looking for databases...';
+        this.containerEl.appendChild(this.statusEl);
+
         this.expandedItems = JSON.parse(
             localStorage.getItem(EXPANDED_EXPLORER_ITEMS_KEY) ?? '{}'
         );
@@ -60,6 +73,7 @@ export class ExplorerView {
     }
 
     public addDatabaseItem(databaseItem: DatabaseItem): void {
+        this.clearStatus();
         this.dbs.push(databaseItem);
 
         this.buildDom();
@@ -72,6 +86,10 @@ export class ExplorerView {
                 this.selectTable(firstTable, databaseItem);
             }
         }
+    }
+
+    private clearStatus() {
+        this.statusEl.remove();
     }
 
     private buildDom() {
